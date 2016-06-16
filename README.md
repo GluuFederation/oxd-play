@@ -18,8 +18,6 @@ You can install oxd-play by adding following line in build.sbt :
     
     libraryDependencies += "org.xdi" % "oxd-java" % "2.4.3.Final"
     
-    resolvers += "bintray" at "http://dl.bintray.com/meghna/maven"
-   
     libraryDependencies += "oxd.play.java" % "oxd-play" % "1.0-FINAL"
 
 
