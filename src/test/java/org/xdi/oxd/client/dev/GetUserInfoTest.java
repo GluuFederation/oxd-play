@@ -1,7 +1,8 @@
-package org.xdi.oxd.client;
+package org.xdi.oxd.client.dev;
 
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+import org.xdi.oxd.client.CommandClient;
 import org.xdi.oxd.common.Command;
 import org.xdi.oxd.common.CommandType;
 import org.xdi.oxd.common.params.GetTokensByCodeParams;
@@ -13,7 +14,7 @@ import org.xdi.oxd.common.response.RegisterSiteResponse;
 import java.io.IOException;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.xdi.oxd.client.TestUtils.notEmpty;
+import static org.xdi.oxd.client.dev.TestUtils.notEmpty;
 
 /**
  * @author Yuriy Zabrovarnyy
@@ -22,14 +23,14 @@ import static org.xdi.oxd.client.TestUtils.notEmpty;
 
 public class GetUserInfoTest {
 
-    @Parameters({"host", "port", "redirectUrl", "userId", "userSecret"})
+    @Parameters({"host", "port", "opHost", "redirectUrl", "userId", "userSecret"})
     @Test
-    public void test(String host, int port, String redirectUrl, String userId, String userSecret) throws IOException {
+    public void test(String host, int port, String opHost, String redirectUrl, String userId, String userSecret) throws IOException {
         CommandClient client = null;
         try {
             client = new CommandClient(host, port);
 
-            final RegisterSiteResponse site = RegisterSiteTest.registerSite(client, redirectUrl);
+            final RegisterSiteResponse site = RegisterSiteTest.registerSite(client, opHost, redirectUrl);
             final GetTokensByCodeResponse tokens = requestTokens(client, site, userId, userSecret);
 
             GetUserInfoParams params = new GetUserInfoParams();

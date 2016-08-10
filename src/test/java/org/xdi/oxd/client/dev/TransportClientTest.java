@@ -1,6 +1,7 @@
-package org.xdi.oxd.client;
+package org.xdi.oxd.client.dev;
 
 import org.testng.annotations.Test;
+import org.xdi.oxd.client.TransportClient;
 
 import java.io.IOException;
 

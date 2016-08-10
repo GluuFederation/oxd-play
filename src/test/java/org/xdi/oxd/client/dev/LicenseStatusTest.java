@@ -1,8 +1,9 @@
-package org.xdi.oxd.client;
+package org.xdi.oxd.client.dev;
 
 import junit.framework.Assert;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+import org.xdi.oxd.client.CommandClient;
 import org.xdi.oxd.common.response.LicenseStatusOpResponse;
 
 import java.io.IOException;
