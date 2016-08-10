@@ -1,0 +1,44 @@
+@import model.Profile
+@(profile: Profile)
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <script src="@routes.Assets.versioned("javascripts/jquery-1.9.0.min.js")"></script>
+        <script type="text/javascript" >
+
+                $(document).ready(function () {
+                    $("#logout").click(function () {
+                        window.location = '@routes.Application.logout()';
+                    });
+
+                });
+
+
+        </script>
+        <title>welcome @profile.getPreferred_username.get(0)</title>
+    </head>
+    <body>
+
+        <table border="1" id="userprofile">
+            <tr ><th align="center" colspan="2">Profile</th></tr>
+
+            <tr ><td align="center" colspan="2"><img src="@profile.getPicture.get(0)"></td></tr>
+            <tr><TH>Field</TH> <TH>Value</TH></tr>
+            <tr><TD>Name</TD> <TD>@profile.getName.get(0)</TD></tr>
+            <tr><TD>Email</TD> <TD>@profile.getEmail.get(0)</TD></tr>
+            <tr><TD>zoneinfo</TD> <TD>@profile.getZoneinfo.get(0)</TD></tr>
+            <tr><TD>birthdate</TD> <TD>@profile.getBirthdate.get(0)</TD></tr>
+            <tr><TD>gender</TD> <TD>@profile.getGender.get(0)</TD></tr>
+            <tr><TD>profile</TD> <TD>@profile.getProfile.get(0)</TD></tr>
+            <tr><TD>locale</TD> <TD>@profile.getLocale.get(0)</TD></tr>
+            <tr><TD>given_name</TD> <TD>@profile.getGiven_name.get(0)</TD></tr>
+            <tr><TD>nickname</TD> <TD>@profile.getNickname.get(0)</TD></tr>
+            <tr><TD>family_name</TD> <TD>@profile.getFamily_name.get(0)</TD></tr>
+            <tr ><td colspan="2" align="center" width="90%"><Button class="button" id="logout">Logout</Button></td></tr>
+
+        </table>
+
+    </body>
+</html>

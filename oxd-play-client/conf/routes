@@ -1,0 +1,26 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# HomePage page
+GET        /                          controllers.Application.HomePage()
+
+GET        /login                     controllers.Application.LoginPage()
+
+GET        /updatesite                controllers.Application.UpdatePage()
+
+GET        /registersite              controllers.Application.RegisterPage()
+
+GET        /registersiteapi           controllers.Application.RegisterSite()
+
+GET        /getLogin                  controllers.Application.getAuthorizationUrlCall()
+
+GET        /updateSiteCall            controllers.Application.updateSiteCall()
+
+GET        /getTokenbyCodeCall        controllers.Application.getTokenbyCodeCall()
+
+GET        /logout                    controllers.Application.logout()
+# Map static resources from the /public folder to the /assets URL path
+GET        /assets/*file              controllers.Assets.versioned(path="/public", file)
+
+    

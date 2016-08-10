@@ -1,0 +1,58 @@
+@(message: String)
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script src="@routes.Assets.versioned("javascripts/jquery-1.9.0.min.js")"></script>
+        <script type="text/javascript" >
+
+                $(document).ready(function () {
+                    $("#Login").click(function () {
+                        window.location = '@routes.Application.LoginPage()';
+                    });
+                    $("#Register").click(function () {
+                        window.location = '@routes.Application.RegisterPage()';
+                    });
+                    $("#Update").click(function () {
+                        window.location = '@routes.Application.UpdatePage()';
+                    });
+
+                });
+
+
+        </script>
+        <script type="text/javascript" >
+
+                $(document).ready(function () {
+                    if ('@message'.length > 2) {
+                        $("#lable").html('Already registered site oxd is @message');
+                    }
+
+
+                });
+        </script>
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+
+        <title>OXD DEMO</title>
+    </head>
+    <body>
+        <div class="form">
+            <header><B>Welecome to OXD-Server Demo in play framework</B></header>
+
+            <div><header><lable id="lable"></lable>
+                <br>
+                <div class="form">    <div >
+                    <button id="Register">Register new site</button>
+                </div>
+                    <br>
+                    <div >
+                        <button id="Update">Update Site</button>
+                    </div>
+                    <br>
+                    <div>
+                        <button id="Login">Login</button>
+                    </div></div>
+            </header></div>
+        </div>
+    </body>
+</html>

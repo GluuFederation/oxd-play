@@ -1,0 +1,75 @@
+@(message: String)
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <script src="@routes.Assets.versioned("javascripts/jquery-1.9.0.min.js")"></script>
+        <script type="text/javascript" >
+
+                $(document).ready(function () {
+                    if ('@message'.length > 2) {
+                        $("#lable").html('registered site oxd is @message');
+                    }
+
+
+                });
+        </script>
+        <script type="text/javascript">
+                $(document).ready(function () {
+
+                    $("#update_site").submit(function () {
+                        if (confirm("this will update your site configuration")) {
+                            window.location = '@routes.Application.RegisterSite()'
+                        }
+                        else {
+                            if (confirm("Go to login page?")) {
+                                window.location = '@routes.Application.LoginPage()'
+                                return false;
+                            }
+                            else return false;
+                        }
+                    })
+                });
+        </script>
+        <title>OXD DEMO - Update <Site></Site></title>
+    </head>
+    <body>
+
+
+        <form id="update_site" action="@routes.Application.updateSiteCall()" method="get" class="form" >
+            <div><header><b>Update Site</b></header></div>
+            <Div><header><label id="lable"></label></header></Div><br><br>
+
+            <div class="form"> <div >
+                <label> Admin Email := </label>
+                <input type="email" name="email" placeholder="Admin Email" id="txtEmail" autofocus="" required="" />
+            </div>
+                <br>
+                <div class="acr" >
+                    <label >Acr Values : </label>
+                    <input type="checkbox" id="gplus_enable" name="oxd_openid_gplus_enable" value="1"><label> Google</label>
+                    <input type="checkbox" id="basic_enable" name="oxd_openid_basic_enable" value="1"><label> Basic</label>
+                    <input type="checkbox" id="duo_enable" name="oxd_openid_duo_enable" value="1"><label> Duo</label>
+                    <input type="checkbox" id="u2f_enable" name="oxd_openid_u2f_enable" value="1" ><label> U2F token</label>
+                </div>
+                <div class="scope">
+                    <label >Scopes : </label>
+                    <input checked="" type="checkbox" name="scope_openid" id="openid" value="1" disabled=""><label for="openid">
+                    openid</label>
+                    <input type="checkbox" name="scope_profile" id="profile" value="1"><label for="profile">profile</label>
+                    <input type="checkbox" name="scope_email" id="email" value="1"><label for="email">email</label>
+                    <input type="checkbox" name="scope_address" id="address" value="1"><label for="address">address</label>
+                    <input type="checkbox" name="scope_clientinfo" id="clientinfo" value="1"><label for="clientinfo">
+                    clientinfo</label>
+                    <input type="checkbox" name="scope_mobile" id="mobile_phone" value="1"><label for="mobile_phone">
+                    mobile_phone</label>
+                    <input type="checkbox" name="scope_phone" id="phone" value="1"><label for="phone">phone</label>
+                </div>
+                <br>
+                <div >
+                    <button type="submit" id="btnRegister">Update Site</button>
+                </div></div>
+        </form>
+    </body>
+</html>
