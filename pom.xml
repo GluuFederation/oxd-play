@@ -14,7 +14,7 @@
     <url>http://ox.gluu.org</url>
 
      <properties>
-        <ce.version>2.4.4.Final</ce.version>
+        <ce.version>2.4.4</ce.version>
         <jackson.version>1.9.9</jackson.version>
         <slf4j.version>1.7.11</slf4j.version>
     </properties>
