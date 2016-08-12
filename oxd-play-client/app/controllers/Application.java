@@ -241,7 +241,7 @@ public class Application extends Controller {
         params.setScope(scopes);
         params.setAcrValues(arcvalues);
 
-
+        params.setAuthorizationRedirectUri(GlobalData.AuthorizationRedirectUri);
         if (form.get("email") != null) {
             params.setContacts(Lists.newArrayList(form.get("email")));
         }
@@ -251,19 +251,26 @@ public class Application extends Controller {
             @Override
             public void success(UpdateSiteResponse updateSiteResponse) {
                 respUpdateSite = updateSiteResponse;
+                System.out.println("updateSiteResponse "+ respUpdateSite.toString());
             }
 
             @Override
             public void error(String s) {
                 error = s;
+                System.out.println("updateSiteResponse Error "+error);
+
             }
         });
 
         if (respUpdateSite == null) {
-            return ok(views.html.registersite.render(error));
+            System.out.println(error.toString());
+            return ok(views.html.registersite.render("updateSiteResponse Error "+ error));
+
 
         } else {
-            return ok(views.html.login.render("Your site with oxd-id :" + respRegisterSIte.getOxdId() + "is updated"));
+            System.out.println(getOxdid());
+
+            return ok(views.html.login.render("updateSiteResponse oxd "+"Your site with oxd-id :" + getOxdid() + "is updated"));
         }
     }
 
