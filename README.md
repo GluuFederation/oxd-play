@@ -1,36 +1,28 @@
-## oxd-play
-
-## what is oxd-play?
+# oxd-play
 
 >oxd-play is Oxd Server client implemented in JAVA, using it you can integrate oxD server in your Play frame work applications easily.
 
 
 # Installation
-----
-
-**Note : you have to install gluu server and oxd-server in your hosting server to use oxd-play library with your application.**
-
----
 
 You can install oxd-play by adding following line in build.sbt :
 
-    resolvers += "Gluu repository" at "http://ox.gluu.org/maven" 
-    
-    libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4	`.Final"
-    
+    resolvers += "Gluu repository" at "http://ox.gluu.org/maven"
+
+    libraryDependencies += "org.xdi" % "oxd-client" % "2.4.4"
+
     libraryDependencies += "oxd.play.java" % "oxd-play" % "1.0-FINAL"
 
+---
+
+**Note :- empty line required between every single line because sbt build use empty line as line separator**
+
+
+## How to use:
 
 ---
 
-**Note :- empty line required between every single line because sbt build use empty line as line separator**  
-
-
-## How to use: 
-
----
-
->1 **Import Oxd-Command class** (all are static methods of "oxdCommands" class.) 
+>1 **Import Oxd-Command class** (all are static methods of "oxdCommands" class.)
 
 ---
 
@@ -55,7 +47,7 @@ You can install oxd-play by adding following line in build.sbt :
     registerSite(host,port, registerSiteParams, new RegisterSiteCallback() {
                     @Override
                     public void success(RegisterSiteResponse registerSiteResponse) {
-    //this is your successful response for register_site command 
+    //this is your successful response for register_site command
                     }
 
                     @Override
@@ -65,6 +57,7 @@ You can install oxd-play by adding following line in build.sbt :
                 });
 
 ***host - oxd-server host eg.localhost or 127.0.0.1 port - oxd-server listing port (default port is 8099)***
+***host - You need to pass ophost with registerSiteParams otherwise server may reject your request***
 
 ---
 

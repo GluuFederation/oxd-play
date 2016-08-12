@@ -330,8 +330,7 @@ public class Application extends Controller {
 
         commandParams.setAuthorizationRedirectUri(GlobalData.AuthorizationRedirectUri);
         commandParams.setPostLogoutRedirectUri(GlobalData.PostLogoutRedirectUri);
-        commandParams.setApplicationType(GlobalData.ApplicationType);
-
+//        commandParams.setApplicationType(GlobalData.ApplicationType);
         commandParams.setRedirectUris(GlobalData.RedirectUris);
 
 //            commandParams.setClientLogoutUri("https://mag.gluu/index.php/customer/account/logout/");
