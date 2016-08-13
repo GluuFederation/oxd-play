@@ -21,8 +21,6 @@ resolvers += "Gluu repository" at "http://ox.gluu.org/maven"
 libraryDependencies += "org.xdi" % "oxd-java" % "2.4.3.Final"
 
 
-resolvers += "bintray" at "http://dl.bintray.com/meghna/maven"
-
 
 libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.3-FINAL"
 
