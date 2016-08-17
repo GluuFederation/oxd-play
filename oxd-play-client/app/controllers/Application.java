@@ -94,7 +94,7 @@ public class Application extends Controller {
         if (form.get("oxd_openid_basic_enable") != null && form.get("oxd_openid_basic_enable").toString().equals("1")) {
             arcvalues.add("basic");
         }
-        if (form.get("oxd_openid_duo_enable") != null && form.get("oxd_openid_duo_enable"   ).toString().equals("1")) {
+        if (form.get("oxd_openid_duo_enable") != null && form.get("oxd_openid_duo_enable").toString().equals("1")) {
             arcvalues.add("duo");
         }
         if (form.get("oxd_openid_u2f_enable") != null && form.get("oxd_openid_u2f_enable").toString().equals("1")) {
@@ -251,26 +251,26 @@ public class Application extends Controller {
             @Override
             public void success(UpdateSiteResponse updateSiteResponse) {
                 respUpdateSite = updateSiteResponse;
-                System.out.println("updateSiteResponse "+ respUpdateSite.toString());
+                System.out.println("updateSiteResponse " + respUpdateSite.toString());
             }
 
             @Override
             public void error(String s) {
                 error = s;
-                System.out.println("updateSiteResponse Error "+error);
+                System.out.println("updateSiteResponse Error " + error);
 
             }
         });
 
         if (respUpdateSite == null) {
             System.out.println(error.toString());
-            return ok(views.html.registersite.render("updateSiteResponse Error "+ error));
+            return ok(views.html.registersite.render("updateSiteResponse Error " + error));
 
 
         } else {
             System.out.println(getOxdid());
 
-            return ok(views.html.login.render("updateSiteResponse oxd "+"Your site with oxd-id :" + getOxdid() + "is updated"));
+            return ok(views.html.login.render("updateSiteResponse oxd " + "Your site with oxd-id :" + getOxdid() + "is updated"));
         }
     }
 
@@ -279,9 +279,9 @@ public class Application extends Controller {
      *
      * @return Redirect call to Authorize URL
      */
-    public Result getAuthorizationUrlCall() {
+    public Result getAuthorizationUrlCall(String arcValue) {
 
-        getAuthorizationUrl(GlobalData.host, GlobalData.port, getAuthorizationUrlparams(getOxdid()), new GetAuthorizationUrlCallback() {
+        getAuthorizationUrl(GlobalData.host, GlobalData.port, getAuthorizationUrlparamByArcValue(arcValue), new GetAuthorizationUrlCallback() {
             @Override
             public void success(GetAuthorizationUrlResponse getAuthorizationUrlResponse) {
                 respGetAuthoUrl = getAuthorizationUrlResponse;
@@ -301,6 +301,25 @@ public class Application extends Controller {
         }
     }
 
+    public GetAuthorizationUrlParams getAuthorizationUrlparamByArcValue(String arcValue) {
+        if (arcValue.equals("basic")) {
+            return getAuthorizationUrlparamsBasic(getOxdid());
+        } else if ((arcValue.equals("duo")))
+        {
+            return getAuthorizationUrlparamsDuo(getOxdid());
+        }
+          else if ((arcValue.equals("u2f")))
+        {
+            return getAuthorizationUrlparamsU2f(getOxdid());
+        }
+         else if ((arcValue.equals("gplus")))
+        {
+            return getAuthorizationUrlparamsGoogle(getOxdid());
+        }
+        else {
+            return  getAuthorizationUrlparamsBasic(getOxdid());
+        }
+    }
 
     /***
      * Will return AuthorizationUrlParams to login
@@ -309,12 +328,65 @@ public class Application extends Controller {
      * @return
      */
 
-    public GetAuthorizationUrlParams getAuthorizationUrlparams(String id) {
+    public GetAuthorizationUrlParams getAuthorizationUrlparamsBasic(String id) {
 
         final GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
 
         commandParams.setOxdId(id);
-        commandParams.setAcrValues(Lists.newArrayList("basic", "duo"));
+        commandParams.setAcrValues(Lists.newArrayList("basic"));
+        return commandParams;
+
+    }
+
+
+    /***
+     * Will return AuthorizationUrlParams to login
+     *
+     * @param id - Registered sites OXD-Id
+     * @return
+     */
+
+    public GetAuthorizationUrlParams getAuthorizationUrlparamsDuo(String id) {
+
+        final GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
+
+        commandParams.setOxdId(id);
+        commandParams.setAcrValues(Lists.newArrayList("duo"));
+        return commandParams;
+
+    }
+
+
+    /***
+     * Will return AuthorizationUrlParams to login
+     *
+     * @param id - Registered sites OXD-Id
+     * @return
+     */
+
+    public GetAuthorizationUrlParams getAuthorizationUrlparamsGoogle(String id) {
+
+        final GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
+
+        commandParams.setOxdId(id);
+        commandParams.setAcrValues(Lists.newArrayList("gplus"));
+        return commandParams;
+
+    }
+
+    /***
+     * Will return AuthorizationUrlParams to login
+     *
+     * @param id - Registered sites OXD-Id
+     * @return
+     */
+
+    public GetAuthorizationUrlParams getAuthorizationUrlparamsU2f(String id) {
+
+        final GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
+
+        commandParams.setOxdId(id);
+        commandParams.setAcrValues(Lists.newArrayList("u2f"));
         return commandParams;
 
     }

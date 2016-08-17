@@ -13,7 +13,7 @@ GET        /registersite              controllers.Application.RegisterPage()
 
 GET        /registersiteapi           controllers.Application.RegisterSite()
 
-GET        /getLogin                  controllers.Application.getAuthorizationUrlCall()
+GET        /getLogin/:arcvalue                  controllers.Application.getAuthorizationUrlCall(arcvalue: String)
 
 GET        /updateSiteCall            controllers.Application.updateSiteCall()
 
