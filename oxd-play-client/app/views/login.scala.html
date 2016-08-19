@@ -1,4 +1,4 @@
-@(message: String)
+@(message: String, scopes: List[String])
 <!DOCTYPE html>
 
 <html>
@@ -14,7 +14,7 @@
 
             <form class="form">
                 <div><b><header>Login Page</header></b></div>
-                <header><h3>@message</h3></header>
+                <header><h3>@message </h3></header>
 
                 <input type="text" placeholder="username"/>
                 <input type="password" placeholder="password"/>
@@ -23,11 +23,24 @@
                 <br>
 
                 <Div class="inline">
-                    <a href="@routes.Application.getAuthorizationUrlCall("duo")"> <img src="@routes.Assets.versioned("images/duo.png")"/></a>
+                @if(scopes.contains("duo")){
+                <a href="@routes.Application.getAuthorizationUrlCall("duo")"> <img src="@routes.Assets.versioned("images/duo.png")"/></a>
+                }
+
+
+                 @if(scopes.contains("basic")){
                 <a href="@routes.Application.getAuthorizationUrlCall("basic")"> <img src="@routes.Assets.versioned("images/basic.png")"/></a>
-                    <a href="@routes.Application.getAuthorizationUrlCall("gplus")"> <img src="@routes.Assets.versioned("images/google.png")"/></a>
-                    <a href="@routes.Application.getAuthorizationUrlCall("u2f")"> <img src="@routes.Assets.versioned("images/U2F.png")"/></a>
-                </Div>
+                }
+
+                @if(scopes.contains("gplus")){
+                <a href="@routes.Application.getAuthorizationUrlCall("gplus")"> <img src="@routes.Assets.versioned("images/google.png")"/></a>
+                }
+
+                    @if(scopes.contains("u2f")){
+<a href="@routes.Application.getAuthorizationUrlCall("u2f")"> <img src="@routes.Assets.versioned("images/U2F.png")"/></a>                }
+
+
+               </Div>
             </form>
         </div>
 

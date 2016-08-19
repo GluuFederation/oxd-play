@@ -38,6 +38,8 @@ public class Application extends Controller {
     static GetUserInfoResponse respGetUserInfoResponse;
     static LogoutResponse logoutResponse;
     static File file = new File("cache.txt");
+    static File filescope = new File("scope.txt");
+
     String error = "";
 
 
@@ -48,7 +50,7 @@ public class Application extends Controller {
     }
 
     public Result LoginPage() {
-        return ok(views.html.login.render(getOxdid()));
+        return ok(views.html.login.render(getOxdid(),getOxdScopes()));
     }
 
     public Result RegisterPage() {
@@ -77,6 +79,28 @@ public class Application extends Controller {
 
     }
 
+
+    private List<String> getOxdScopes() {
+        List<String> scopes = new ArrayList<>();
+        if (filescope.exists()) {
+
+            try {
+                FileInputStream fis = new FileInputStream(filescope);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                scopes = (List<String>) ois.readObject();
+                ois.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return scopes;
+
+    }
 
     /**
      * internal Api call to Oxd-server for for Registering Site
@@ -177,7 +201,36 @@ public class Application extends Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return ok(views.html.login.render("Your site is register with oxd-id :" + respRegisterSIte.getOxdId()));
+
+
+            try {
+                if (!filescope.exists()) {
+                    if (filescope.createNewFile()) {
+                        FileOutputStream out = new
+                                FileOutputStream((filescope));
+                        ObjectOutputStream oos = new ObjectOutputStream(out);
+
+                        oos.writeObject(params.getAcrValues());
+                        oos.close();
+                        out.close();
+                    }
+                } else {
+                    if (filescope.delete()) {
+                        if (filescope.createNewFile()) {
+                            FileOutputStream out = new
+                                    FileOutputStream(filescope);
+                            ObjectOutputStream oos = new ObjectOutputStream(out);
+
+                            oos.writeObject(params.getAcrValues());
+                            oos.close();
+                            out.close();
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return ok(views.html.login.render("Your site is register with oxd-id :" + respRegisterSIte.getOxdId(),getOxdScopes()));
         }
     }
 
@@ -262,6 +315,7 @@ public class Application extends Controller {
             }
         });
 
+
         if (respUpdateSite == null) {
             System.out.println(error.toString());
             return ok(views.html.registersite.render("updateSiteResponse Error " + error));
@@ -269,8 +323,34 @@ public class Application extends Controller {
 
         } else {
             System.out.println(getOxdid());
+            try {
+                if (!filescope.exists()) {
+                    if (filescope.createNewFile()) {
+                        FileOutputStream out = new
+                                FileOutputStream((filescope));
+                        ObjectOutputStream oos = new ObjectOutputStream(out);
 
-            return ok(views.html.login.render("updateSiteResponse oxd " + "Your site with oxd-id :" + getOxdid() + "is updated"));
+                        oos.writeObject(params.getAcrValues());
+                        oos.close();
+                        out.close();
+                    }
+                } else {
+                    if (filescope.delete()) {
+                        if (filescope.createNewFile()) {
+                            FileOutputStream out = new
+                                    FileOutputStream(filescope);
+                            ObjectOutputStream oos = new ObjectOutputStream(out);
+
+                            oos.writeObject(params.getAcrValues());
+                            oos.close();
+                            out.close();
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return ok(views.html.login.render("updateSiteResponse oxd " + "Your site with oxd-id :" + getOxdid() + "is updated",getOxdScopes()));
         }
     }
 
@@ -294,7 +374,7 @@ public class Application extends Controller {
         });
 
         if (respGetAuthoUrl == null) {
-            return ok(views.html.login.render(error));
+            return ok(views.html.login.render(error,getOxdScopes()));
 
         } else {
             return redirect(respGetAuthoUrl.getAuthorizationUrl());
@@ -471,7 +551,7 @@ public class Application extends Controller {
             });
 
         if (respGetAuthoUrl == null) {
-            return ok(views.html.login.render(error));
+            return ok(views.html.login.render(error,getOxdScopes()));
 
         }
         GetUserInfoParams getUserInfoParams = new GetUserInfoParams();
@@ -492,7 +572,7 @@ public class Application extends Controller {
         });
 
         if (respGetUserInfoResponse == null) {
-            return ok(views.html.login.render(error));
+            return ok(views.html.login.render(error,getOxdScopes()));
 
         } else {
             Profile profile = new Profile();
@@ -614,7 +694,7 @@ public class Application extends Controller {
         });
 
         if (logoutResponse == null) {
-            return ok(views.html.login.render(error));
+            return ok(views.html.login.render(error,getOxdScopes()));
         } else {
             return redirect(logoutResponse.getUri());
         }
