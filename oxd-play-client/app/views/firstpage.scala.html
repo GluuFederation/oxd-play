@@ -25,7 +25,9 @@
 
                 $(document).ready(function () {
                     if ('@message'.length > 2) {
-                        $("#lable").html('Already registered site oxd is @message');
+                        window.location = '@routes.Application.LoginPage()';
+                    }else{
+                    window.location = '@routes.Application.RegisterPage()';
                     }
 
 
@@ -49,9 +51,7 @@
                         <button id="Update">Update Site</button>
                     </div>
                     <br>
-                    <div>
-                        <button id="Login">Login</button>
-                    </div></div>
+                    </div>
             </header></div>
         </div>
     </body>

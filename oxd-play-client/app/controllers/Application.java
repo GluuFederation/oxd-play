@@ -155,7 +155,7 @@ public class Application extends Controller {
 
         params.setScope(scopes);
         params.setAcrValues(arcvalues);
-        params.setOpHost(GlobalData.opHost);
+//        params.setOpHost(GlobalData.opHost);
 
 
         if (form.get("email") != null) {
@@ -294,7 +294,7 @@ public class Application extends Controller {
         params.setScope(scopes);
         params.setAcrValues(arcvalues);
 
-        params.setAuthorizationRedirectUri(GlobalData.AuthorizationRedirectUri);
+//        params.setAuthorizationRedirectUri(GlobalData.AuthorizationRedirectUri);
         if (form.get("email") != null) {
             params.setContacts(Lists.newArrayList(form.get("email")));
         }
@@ -414,6 +414,7 @@ public class Application extends Controller {
 
         commandParams.setOxdId(id);
         commandParams.setAcrValues(Lists.newArrayList("basic"));
+        commandParams.setPrompt("login");
         return commandParams;
 
     }
@@ -432,6 +433,7 @@ public class Application extends Controller {
 
         commandParams.setOxdId(id);
         commandParams.setAcrValues(Lists.newArrayList("duo"));
+        commandParams.setPrompt("login");
         return commandParams;
 
     }
@@ -450,6 +452,8 @@ public class Application extends Controller {
 
         commandParams.setOxdId(id);
         commandParams.setAcrValues(Lists.newArrayList("gplus"));
+        commandParams.setPrompt("login");
+
         return commandParams;
 
     }
@@ -467,6 +471,8 @@ public class Application extends Controller {
 
         commandParams.setOxdId(id);
         commandParams.setAcrValues(Lists.newArrayList("u2f"));
+        commandParams.setPrompt("login");
+
         return commandParams;
 
     }
@@ -482,12 +488,13 @@ public class Application extends Controller {
 
         commandParams.setAuthorizationRedirectUri(GlobalData.AuthorizationRedirectUri);
         commandParams.setPostLogoutRedirectUri(GlobalData.PostLogoutRedirectUri);
+        commandParams.setClientJwksUri();
 //        commandParams.setApplicationType(GlobalData.ApplicationType);
-        commandParams.setRedirectUris(GlobalData.RedirectUris);
+//        commandParams.setRedirectUris(GlobalData.RedirectUris);
 
 //            commandParams.setClientLogoutUri("https://mag.gluu/index.php/customer/account/logout/");
-        commandParams.setClientLogoutUri(GlobalData.ClientLogoutUri);
-        commandParams.setGrantType(GlobalData.GrantType);
+//        commandParams.setClientLogoutUri(GlobalData.ClientLogoutUri);
+//        commandParams.setGrantType(GlobalData.GrantType);
 
         commandParams.setResponseTypes(GlobalData.ResponseType);
 
@@ -514,14 +521,18 @@ public class Application extends Controller {
 
         List<NameValuePair> params = data;
 
-        if (params.get(2) != null)
-            commandParams.setState(params.get(2).getValue());
+        try {
+            if (params.get(2) != null)
+                commandParams.setState(params.get(2).getValue());
 
-        if (params.get(1) != null)
-            commandParams.setScopes(Arrays.asList(params.get(1).getValue().split(" ")));
+            if (params.get(1) != null)
+                commandParams.setScopes(Arrays.asList(params.get(1).getValue().split(" ")));
 
-        if (params.get(3) != null)
-            commandParams.setCode((params.get(3).getValue()));
+            if (params.get(3) != null)
+                commandParams.setCode((params.get(3).getValue()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return commandParams;
 
@@ -554,6 +565,7 @@ public class Application extends Controller {
             return ok(views.html.login.render(error,getOxdScopes()));
 
         }
+        System.out.print(respGetTokensByCodeResponse.toString() + " "+error);
         GetUserInfoParams getUserInfoParams = new GetUserInfoParams();
         getUserInfoParams.setOxdId(id);
         if (respGetTokensByCodeResponse != null)

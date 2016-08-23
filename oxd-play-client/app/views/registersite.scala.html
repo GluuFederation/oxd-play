@@ -19,7 +19,7 @@
                 $(document).ready(function () {
 
                     $("#register_site").submit(function () {
-                        if (confirm("this will replace your current site")) {
+                        if (confirm("Create new site configuration?")) {
                             window.location = '@routes.Application.RegisterSite()'
                         }
                         else {

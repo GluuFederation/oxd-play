@@ -35,9 +35,12 @@ You can install oxd-play by adding following line in build.sbt :
 ---
 1 - create registerSiteParams
 
-    RegisterSiteParams registerSiteParams = new RegisterSiteParams();
-
-    registerSiteParams.setAuthorizationRedirectUri("public address of the site") //Required
+     final RegisterSiteParams commandParams = new RegisterSiteParams();
+         commandParams.setOpHost(opHost);//Required
+         commandParams.setAuthorizationRedirectUri(redirectUrl);//Required and must be https
+         commandParams.setPostLogoutRedirectUri(postLogoutRedirectUrl);//must be https
+         commandParams.setClientLogoutUri(Lists.newArrayList(logoutUri));// must be https
+         commandParams.setScope(Lists.newArrayList("openid", "uma_protection", "uma_authorization"));
 
 
 
@@ -66,9 +69,10 @@ You can install oxd-play by adding following line in build.sbt :
 ---
    1- create UpdateSiteParams
 
-    UpdateSiteParams params = new UpdateSiteParams();
-
-    params.setOxdId("Registered Sites Oxd-id");
+    final UpdateSiteParams commandParams = new UpdateSiteParams();
+                commandParams.setOxdId("Registered Sites Oxd-id");
+                commandParams.setClientSecretExpiresAt(calendar.getTime());
+                commandParams.setScope(Lists.newArrayList("profile"));
 
 
 
@@ -178,14 +182,18 @@ You can install oxd-play by adding following line in build.sbt :
 ---
    1- create GetLogoutUrlParams
   
-    GetLogoutUrlParams getLogoutUrlParams = new GetLogoutUrlParams();
-    getLogoutUrlParams.setOxdId("Registered site's oxd-id");
+       final GetLogoutUrlParams commandParams = new GetLogoutUrlParams();
+                commandParams..setOxdId("Registered site's oxd-id"); //     required
+                commandParams.setIdTokenHint("dummy_token");
+                commandParams.setPostLogoutRedirectUri(postLogoutRedirectUrl);
+                commandParams.setState(UUID.randomUUID().toString());
+                commandParams.setSessionState(UUID.randomUUID().toString()); // here must be real session instead of dummy UUID
 
 2 - Call "getLogoutUri" method using created GetLogoutUrlParams
 
         getLogoutUri(host, port, getLogoutUrlParams, new GetlogoutUrlCallback() {
             @Override
-            public void success(LogoutResponse AlogoutResponse) {
+            public void success(LogoutResponse AlogoutResponse) {s
                 //successful  call will return LogoutResponse
             }
 
@@ -199,3 +207,6 @@ You can install oxd-play by adding following line in build.sbt :
 
 
 ----
+
+
+**Note :- You can also refer "[OXD_JAVA](https://oxd.gluu.org/docs/libraries/java/)" for more details of java classes**
