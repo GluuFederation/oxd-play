@@ -93,7 +93,7 @@ You can install oxd-play by adding following line in build.sbt :
     GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
 
         commandParams.setOxdId("Registered Sites Oxd-id");//required
-        commandParams.setAcrValues(Lists.newArrayList("basic", "duo")); //optional
+        commandParams.setAcrValues("List of arcvalue"); //optional
 
 2 - Call "getAuthorizationUrl" method using created GetAuthorizationUrlParams
 
