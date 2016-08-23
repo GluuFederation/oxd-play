@@ -36,11 +36,8 @@ You can install oxd-play by adding following line in build.sbt :
 1 - create registerSiteParams
 
      final RegisterSiteParams commandParams = new RegisterSiteParams();
-         commandParams.setOpHost(opHost);//Required
+         commandParams.setOpHost(opHost);//Optinal 
          commandParams.setAuthorizationRedirectUri(redirectUrl);//Required and must be https
-         commandParams.setPostLogoutRedirectUri(postLogoutRedirectUrl);//must be https
-         commandParams.setClientLogoutUri(Lists.newArrayList(logoutUri));// must be https
-         commandParams.setScope(Lists.newArrayList("openid", "uma_protection", "uma_authorization"));
 
 
 
@@ -60,8 +57,6 @@ You can install oxd-play by adding following line in build.sbt :
                 });
 
 ***host - oxd-server host eg.localhost or 127.0.0.1 port - oxd-server listing port (default port is 8099)***
-***host - You need to pass ophost with registerSiteParams otherwise server may reject your request***
-
 ---
 
 >3 **update_site__registration**
@@ -70,9 +65,7 @@ You can install oxd-play by adding following line in build.sbt :
    1- create UpdateSiteParams
 
     final UpdateSiteParams commandParams = new UpdateSiteParams();
-                commandParams.setOxdId("Registered Sites Oxd-id");
-                commandParams.setClientSecretExpiresAt(calendar.getTime());
-                commandParams.setScope(Lists.newArrayList("profile"));
+                commandParams.setOxdId("Registered Sites Oxd-id");//Required
 
 
 
@@ -99,7 +92,7 @@ You can install oxd-play by adding following line in build.sbt :
 
     GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
 
-        commandParams.setOxdId("Registered Sites Oxd-id");
+        commandParams.setOxdId("Registered Sites Oxd-id");//required
         commandParams.setAcrValues(Lists.newArrayList("basic", "duo")); //optional
 
 2 - Call "getAuthorizationUrl" method using created GetAuthorizationUrlParams
@@ -130,7 +123,7 @@ You can install oxd-play by adding following line in build.sbt :
 
         commandParams.setOxdId("Registered Site oxd-id code");//required
 
-        commandParams.setState("State from redirected uri");
+        commandParams.setState("State from redirected uri");//optional
 
         commandParams.setScopes("Scope from redirected uri");//required
 
@@ -184,9 +177,9 @@ You can install oxd-play by adding following line in build.sbt :
   
        final GetLogoutUrlParams commandParams = new GetLogoutUrlParams();
                 commandParams..setOxdId("Registered site's oxd-id"); //     required
-                commandParams.setIdTokenHint("dummy_token");
-                commandParams.setPostLogoutRedirectUri(postLogoutRedirectUrl);
-                commandParams.setState(UUID.randomUUID().toString());
+                commandParams.setIdTokenHint("dummy_token"); //optinal
+                commandParams.setPostLogoutRedirectUri(postLogoutRedirectUrl); //optinal
+                commandParams.setState(UUID.randomUUID().toString()); //optinal
                 commandParams.setSessionState(UUID.randomUUID().toString()); // here must be real session instead of dummy UUID
 
 2 - Call "getLogoutUri" method using created GetLogoutUrlParams

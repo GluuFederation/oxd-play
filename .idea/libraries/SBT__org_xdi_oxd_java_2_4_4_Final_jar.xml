@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: org.xdi:oxd-java:2.4.4.Final:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.xdi/oxd-java/jars/oxd-java-2.4.4.Final.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.xdi/oxd-java/srcs/oxd-java-2.4.4.Final-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

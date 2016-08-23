@@ -487,8 +487,7 @@ public class Application extends Controller {
 
 
         commandParams.setAuthorizationRedirectUri(GlobalData.AuthorizationRedirectUri);
-        commandParams.setPostLogoutRedirectUri(GlobalData.PostLogoutRedirectUri);
-        commandParams.setClientJwksUri();
+//        commandParams.setPostLogoutRedirectUri(GlobalData.PostLogoutRedirectUri);
 //        commandParams.setApplicationType(GlobalData.ApplicationType);
 //        commandParams.setRedirectUris(GlobalData.RedirectUris);
 
@@ -496,7 +495,7 @@ public class Application extends Controller {
 //        commandParams.setClientLogoutUri(GlobalData.ClientLogoutUri);
 //        commandParams.setGrantType(GlobalData.GrantType);
 
-        commandParams.setResponseTypes(GlobalData.ResponseType);
+//        commandParams.setResponseTypes(GlobalData.ResponseType);
 
 
         return commandParams;
