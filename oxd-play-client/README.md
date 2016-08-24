@@ -3,6 +3,15 @@
 ----
 oxd-play-client is simple implementation of oxd-play library in playframe work.
 
+
+## Configuration:
+
+---
+
+There is GlobalData class in .Global package where you can change various parameters according to your configurations.
+
+
+
 ##Application Setup
 ---
 
@@ -12,12 +21,6 @@ clone clinet project and run using activator with "-Dhttp.port=disabled -Dhttps.
 9005 is you port where you application will run on https protocal. This will make sure you app will always run on https instead http.
 
 >note :- use this command only in development mode because "-Dhttps.port=9005" will generate selfsigned certification for https which may not work in real time. For prodcucation mode you need to generate you owen ssl certificate using keystore.
-
-## Useage:
-
----
-
-There is GlobalData class in .Global package where you can change various parameters according to your configurations.
 
 
 ##Tips:

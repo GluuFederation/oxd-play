@@ -2,19 +2,23 @@
 
 >oxd-play is Oxd Server client implemented in JAVA, using it you can integrate oxD server in your Play frame work applications easily.oxd-play provides easy way to communicate with oxd-server in play-framework.oxd-pay can perform six necessary function of Oauth2 authentication process on oxd-server.  
 
+    For information about oxd, visit http://oxd.gluu.org
 
 # Installation
 
 Installation of oxd-play is very easy task with help of you can use Maven.
-To use maven  adding following line in build.sbt and sbt will do rest for you.
+To use maven  adding following line in build.sbt and sbt build will do rest for you.
 
     resolvers += "Gluu repository" at "http://ox.gluu.org/maven"
 
     libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4.Final"
 
     libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4-FINAL"
+-----------------------------------------------------------------------
 
----
+GitHub source code :- [https://github.com/GluuFederation/oxd-play](https://github.com/GluuFederation/oxd-play)
+For demo project :- [https://github.com/GluuFederation/oxd-play/tree/master/oxd-play-client](https://github.com/GluuFederation/oxd-play/tree/master/oxd-play-client)
+
 
 **Note :- empty line required between every single line because sbt build use empty line as line separator**
 
@@ -22,7 +26,7 @@ To use maven  adding following line in build.sbt and sbt will do rest for you.
 
 We need nothing to configuration before start using oxd-play everything can be set on run time but still we can configure our oxd-server's default configurations. 
 
-### How to use:
+# Sample Code
 
 Usage of Oxd-play is very simple as First of all we need to create parameter object related to command we are going to perform and pass to related method.
 Check Sample code below we are creating commandParams object  related to commands and calling related method with created params.
@@ -213,9 +217,6 @@ On successful login server will redirect to "AuthorizationRedirectUri" given at 
     //will return error message if any
             }
         });
-
-
-
 
 ----
 
