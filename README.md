@@ -41,10 +41,8 @@ We need nothing to configuration before start using oxd-play everything can be s
 
 # Sample Code
 
-Usage of Oxd-play is very simple as First of all we need to create parameter object related to command we are going to perform and pass to related method.
+Usage of Oxd-play is very simple. First of all we need to create parameter object related to command we are going to perform and pass to related method.
 Check Sample code below we are creating commandParams object  related to commands and calling related method with created params.
-
-If you check classes in details each class have different params where not all the params are required some are optional ,too.Required params are mentioned below check carefully before start. 
 
 when you call method as you will also pass a callback which can return result of operation.callback have two methods success and error.In success you will get a response from server and if any error occurs you will get a error message to simplify error. 
 
