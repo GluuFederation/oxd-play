@@ -49,7 +49,7 @@ Import oxdCommands class from oxd-play by adding this oxd.
 
 ---
 
- Register site is very impotent task because it registers you site with oxd-Authentication server so you need to be care full while passing params with register site command.
+ Register site is very impotent task because it registers you site with oxd-Authentication server so you need to be careful while passing params with register site command.
 
 1 - create registerSiteParams
 
