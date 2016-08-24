@@ -30,10 +30,7 @@ public class oxdCommands {
         if (commandParams.getAuthorizationRedirectUri() == null) {
             callback.error("AuthorizationRedirectUri is required");
         }
-        if(commandParams.getOpHost() == null || commandParams.getOpHost().length() ==0){
-            callback.error("OpHost is required");
-
-        }
+       
 
         try {
             client = new CommandClient(host, port);
