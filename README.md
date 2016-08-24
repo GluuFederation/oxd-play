@@ -1,22 +1,16 @@
-#~~ oxd-play~~
+#oxd-play
 
->oxd-play is Oxd Server client implemented in JAVA, using it you can integrate oxD server in your Play frame work applications easily.
+>oxd-play is Oxd Server client implemented in JAVA, using it you can integrate oxD server in your Play frame work applications easily.oxd-play provides easy way to communicate with oxd-server in play-framework.oxd-pay can perform six necessary function of Oauth2 authentication process on oxd-server.  
 
 
 # Installation
 
-we have installed oxd-play library to maven repository  so it can be integrated easily using sbt build. 
-
-**sources**
-oxd-play source is available on Github:
-[Github link](https://github.com/GluuFederation/oxd-play)
-
-
-We can install oxd-play by adding following line in build.sbt using :
+Installation of oxd-play is very easy task with help of you can use Maven.
+To use maven  adding following line in build.sbt and sbt will do rest for you.
 
     resolvers += "Gluu repository" at "http://ox.gluu.org/maven"
 
-    libraryDependencies += "org.xdi" % "oxd-client" % "2.4.4.Final"
+    libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4.Final"
 
     libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4-FINAL"
 
@@ -25,11 +19,18 @@ We can install oxd-play by adding following line in build.sbt using :
 **Note :- empty line required between every single line because sbt build use empty line as line separator**
 
 #Configuration
+
 We need nothing to configuration before start using oxd-play everything can be set on run time but still we can configure our oxd-server's default configurations. 
 
-## How to use:
+### How to use:
 
+Usage of Oxd-play is very simple as First of all we need to create parameter object related to command we are going to perform and pass to related method.
+Check Sample code below we are creating commandParams object  related to commands and calling related method with created params.
 
+If you check classes in details each class have different params where not all the params are required some are optional ,too.Required params are mentioned below check carefully before start. 
+
+when you call method as you will also pass a callback which can return result of operation.callback have two methods success and error.In success you will get a response from server and if any error occurs you will get a error message to simplify error. 
+ 
 >1 **Import Oxd-Command class** (all are static methods of "oxdCommands" class.)
 
 ---
@@ -42,6 +43,9 @@ Import oxdCommands class from oxd-play by adding this oxd.
 >2 **register_site**
 
 ---
+
+ Register site is very impotent task because it registers you site with oxd-Authentication server so you need to be care full while passing params with register site command.
+
 1 - create registerSiteParams
 
      final RegisterSiteParams commandParams = new RegisterSiteParams();
@@ -57,6 +61,7 @@ Import oxdCommands class from oxd-play by adding this oxd.
                     @Override
                     public void success(RegisterSiteResponse registerSiteResponse) {
     //this is your successful response for register_site command
+      //registerSiteResponse.getOxdId() to get oxdid returened by server.                  
                     }
 
                     @Override
@@ -69,8 +74,11 @@ Import oxdCommands class from oxd-play by adding this oxd.
 
 
 >3 **update_site__registration**
-
+   
 ---
+
+At some point if you need to change configuration of register site you can perform.update site command.
+
    1- create UpdateSiteParams
 
     final UpdateSiteParams commandParams = new UpdateSiteParams();
@@ -85,6 +93,7 @@ Import oxdCommands class from oxd-play by adding this oxd.
             @Override
             public void success(UpdateSiteResponse updateSiteResponse) {
                 //this is your successful response for update_site__registration command 
+                //updateSiteResponse.getOxdId() to get Oxd returened by server.
             }
 
             @Override
@@ -96,6 +105,9 @@ Import oxdCommands class from oxd-play by adding this oxd.
 >4 **get_authorization_url**
 
 ---
+
+get_authorization_url command will be useful to get Url to redirect user for login.So all you need to do is just call get_authorization_url command successfully and redirect to returned url in callback's success method.
+
 1- create GetAuthorizationUrlParams
 
     GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
@@ -110,6 +122,7 @@ Import oxdCommands class from oxd-play by adding this oxd.
             @Override
             public void success(GetAuthorizationUrlResponse getAuthorizationUrlResponse) {
            //successful  call will return getAuthorizationUrlResponse
+           //getAuthorizationUrlResponse.getAuthorizationUrl() will return authorization url to redirect
             }
 
             @Override
@@ -123,6 +136,8 @@ Import oxdCommands class from oxd-play by adding this oxd.
 >5 **get_tokens_by_code**
 
 ---
+
+On successful login server will redirect to "AuthorizationRedirectUri" given at time register site command.From AuthorizationRedirectUri You need to parse scope and code which Will be useful to "get_tokens_by_code".
  1- create GetTokensByCodeParams
 
 
@@ -141,6 +156,7 @@ Import oxdCommands class from oxd-play by adding this oxd.
     getToken(host, port, GetTokensByCodeParams, new GetTokensByCodeCallback() {
                  public void success(GetTokensByCodeResponse getTokensByCodeResponse) {
                    //successful  call will return GetTokensByCodeResponse
+                   //getTokensByCodeResponse.getAccessToken() to get access Token
                 }
 
                 @Override
@@ -167,6 +183,7 @@ Import oxdCommands class from oxd-play by adding this oxd.
             @Override
             public void success(GetUserInfoResponse getUserInfoResponse) {
                    //successful  call will return GetUserInfoResponse
+                   //getUserInfoResponse.getClaims() Will return Hash map with calimed user informations.
                 }
                 @Override
                 public void error(String s) {
@@ -182,19 +199,15 @@ Import oxdCommands class from oxd-play by adding this oxd.
   
        final GetLogoutUrlParams commandParams = new GetLogoutUrlParams();
                 commandParams..setOxdId("Registered site's oxd-id"); //     required
-                commandParams.setIdTokenHint("dummy_token"); //optinal
-                commandParams.setPostLogoutRedirectUri(postLogoutRedirectUrl); //optinal
-                commandParams.setState(UUID.randomUUID().toString()); //optinal
-                commandParams.setSessionState(UUID.randomUUID().toString()); // here must be real session instead of dummy UUID
 
 2 - Call "getLogoutUri" method using created GetLogoutUrlParams
 
         getLogoutUri(host, port, getLogoutUrlParams, new GetlogoutUrlCallback() {
             @Override
-            public void success(LogoutResponse AlogoutResponse) {s
+            public void success(LogoutResponse AlogoutResponse) {
                 //successful  call will return LogoutResponse
+                //AlogoutResponse.getUri() will return uri to be redirected 
             }
-
             @Override
             public void error(String s) {
     //will return error message if any
