@@ -2,11 +2,11 @@
 
 >oxd-play is Oxd Server client implemented in JAVA, using it you can integrate oxD server in your Play frame work applications easily.oxd-play provides easy way to communicate with oxd-server in play-framework.oxd-pay can perform six necessary function of Oauth2 authentication process on oxd-server.  
 
-    For information about oxd, visit http://oxd.gluu.org
+ For information about oxd, visit [http://oxd.gluu.org](http://oxd.gluu.org)
 
 # Installation
 
-Installation of oxd-play is very easy task with help of you can use Maven.
+Installation of oxd-play is very easy task With help of Maven and sbt.
 To use maven  adding following line in build.sbt and sbt build will do rest for you.
 
     resolvers += "Gluu repository" at "http://ox.gluu.org/maven"
@@ -14,7 +14,19 @@ To use maven  adding following line in build.sbt and sbt build will do rest for 
     libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4.Final"
 
     libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4-FINAL"
+
+
+ **Import Oxd-Command class** (all are static methods of "oxdCommands" class.)
+
+---
+
+Import oxdCommands class from oxd-play by adding this oxd. 
+
+    import static org.xdi.oxd.client.oxdCommands.*;
+
+
 -----------------------------------------------------------------------
+
 
 GitHub source code :- [https://github.com/GluuFederation/oxd-play](https://github.com/GluuFederation/oxd-play)
 
@@ -35,34 +47,21 @@ Check Sample code below we are creating commandParams object  related to command
 If you check classes in details each class have different params where not all the params are required some are optional ,too.Required params are mentioned below check carefully before start. 
 
 when you call method as you will also pass a callback which can return result of operation.callback have two methods success and error.In success you will get a response from server and if any error occurs you will get a error message to simplify error. 
- 
->1 **Import Oxd-Command class** (all are static methods of "oxdCommands" class.)
+
+>1 **register_site**
 
 ---
 
-Import oxdCommands class from oxd-play by adding this oxd. 
-
-    import static org.xdi.oxd.client.oxdCommands.*;
-
-
->2 **register_site**
-
----
-
- Register site is very impotent task because it registers you site with oxd-Authentication server so you need to be careful while passing params with register site command.
-
-1 - create registerSiteParams
 ```java
+
+// create registerSiteParams
+
 final RegisterSiteParams commandParams = new RegisterSiteParams();
 commandParams.setOpHost(opHost);//Optinal 
 commandParams.setAuthorizationRedirectUri(redirectUrl);//Required and must be https
-```
 
+// Call "registerSite" method using created registerSiteParams
 
-
-
-2 - Call "registerSite" method using created registerSiteParams
-```java
 registerSite(host,port, registerSiteParams, new RegisterSiteCallback() {
                     @Override
                     public void success(RegisterSiteResponse registerSiteResponse) {
@@ -71,7 +70,7 @@ registerSite(host,port, registerSiteParams, new RegisterSiteCallback() {
                     }
                     @Override
                     public void error(String s) {
-    //returns error message
+                //returns error message
                     }
                 });
 ```
@@ -79,23 +78,19 @@ registerSite(host,port, registerSiteParams, new RegisterSiteCallback() {
 ***host - oxd-server host eg.localhost or 127.0.0.1 port - oxd-server listing port (default port is 8099)***
 
 
->3 **update_site__registration**
+>2 **update_site__registration**
    
 ---
 
-At some point if you need to change configuration of register site you can perform.update site command.
-
-   1- create UpdateSiteParams
 ```java
+
+//create UpdateSiteParams
+
 final UpdateSiteParams commandParams = new UpdateSiteParams();
 commandParams.setOxdId("Registered Sites Oxd-id");//Required
-```
 
+//Call "updateSite" method using created registerSiteParams
 
-
-
-2 - Call "updateSite" method using created registerSiteParams
-```java
 updateSite(host, port, UpdateSiteParams, new UpdateSiteCallback() {
             @Override
             public void success(UpdateSiteResponse updateSiteResponse) {
@@ -104,27 +99,27 @@ updateSite(host, port, UpdateSiteParams, new UpdateSiteCallback() {
             }
             @Override
             public void error(String s) {
+              //returns error message
             }
         });
 ```
 
 
->4 **get_authorization_url**
+>3 **get_authorization_url**
 
 ---
 
-get_authorization_url command will be useful to get Url to redirect user for login.So all you need to do is just call get_authorization_url command successfully and redirect to returned url in callback's success method.
 
-1- create GetAuthorizationUrlParams
+
 ```java
+//create GetAuthorizationUrlParams
+
 GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
 commandParams.setOxdId("Registered Sites Oxd-id");//required
-commandParams.setAcrValues(Lists.newArrayList("basic", "duo")); //optional
-```
+commandParams.setAcrValues("List of arc values"); //optional
 
-2 - Call "getAuthorizationUrl" method using created GetAuthorizationUrlParams
+// Call "getAuthorizationUrl" method using created GetAuthorizationUrlParams
 
-```java
 getAuthorizationUrl(host, port,GetAuthorizationUrlParams, new GetAuthorizationUrlCallback() {
             @Override
             public void success(GetAuthorizationUrlResponse getAuthorizationUrlResponse) {
@@ -133,21 +128,21 @@ getAuthorizationUrl(host, port,GetAuthorizationUrlParams, new GetAuthorizationUr
             }
             @Override
             public void error(String s) {
-                error = s;
+               //returns error message
+
             }
         });
 ```
 
 
 
->5 **get_tokens_by_code**
+>4 **get_tokens_by_code**
 
 ---
-
-On successful login server will redirect to "AuthorizationRedirectUri" given at time register site command.From AuthorizationRedirectUri You need to parse scope and code which Will be useful to "get_tokens_by_code".
- 1- create GetTokensByCodeParams
-
 ```java
+
+//create GetTokensByCodeParams
+
 
 GetTokensByCodeParams commandParams = new GetTokensByCodeParams();
 
@@ -158,10 +153,9 @@ commandParams.setState("State from redirected uri");//optional
 commandParams.setScopes("Scope from redirected uri");//required
 
  commandParams.setCode("Code from redirected uri");//required
-```
 
-2 - Call "getToken" method using created GetTokensByCodeParams
-```java
+// Call "getToken" method using created GetTokensByCodeParams
+
 
 getToken(host, port, GetTokensByCodeParams, new GetTokensByCodeCallback() {
                  public void success(GetTokensByCodeResponse getTokensByCodeResponse) {
@@ -171,27 +165,24 @@ getToken(host, port, GetTokensByCodeParams, new GetTokensByCodeCallback() {
 
                 @Override
                 public void error(String s) {
-    //will return error message if any
+                    //will return error message if any
                 }
             });
 ```
 
 
->6 **get_user_info**
+>5 **get_user_info**
 
 ---
- 1- create GetUserInfoParams
- ```java
+```java
+ //create GetUserInfoParams
 
      GetUserInfoParams getUserInfoParams = new GetUserInfoParams();
         getUserInfoParams.setOxdId("Regitered site's oxd-id");
         getUserInfoParams.setAccessToken("Access token from GetTokensByCode call");
-```
 
+// Call "getUserInfo" method using created GetTokensByCodeParams
 
-
-2 - Call "getUserInfo" method using created GetTokensByCodeParams
-```java
     getUserInfo(host, port, getUserInfoParams, new GetUserInfoCallback() {
             @Override
             public void success(GetUserInfoResponse getUserInfoResponse) {
@@ -200,23 +191,23 @@ getToken(host, port, GetTokensByCodeParams, new GetTokensByCodeCallback() {
                 }
                 @Override
                 public void error(String s) {
-    //will return error message if any
+                    //will return error message if any
                 }
             });
 ```
 
->7 **get_logout_uri**
+>6 **get_logout_uri**
 
 ---
-   1- create GetLogoutUrlParams
   
-  ```java
+```java
+//create GetLogoutUrlParams
+
        final GetLogoutUrlParams commandParams = new GetLogoutUrlParams();
                 commandParams..setOxdId("Registered site's oxd-id"); //     required
-```
 
-2 - Call "getLogoutUri" method using created GetLogoutUrlParams
-```java
+
+// Call "getLogoutUri" method using created GetLogoutUrlParams
 
         getLogoutUri(host, port, getLogoutUrlParams, new GetlogoutUrlCallback() {
             @Override
@@ -226,7 +217,7 @@ getToken(host, port, GetTokensByCodeParams, new GetTokensByCodeCallback() {
             }
             @Override
             public void error(String s) {
-    //will return error message if any
+                //will return error message if any
             }
         });
 ```
