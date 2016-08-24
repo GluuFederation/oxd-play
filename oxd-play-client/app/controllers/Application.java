@@ -415,7 +415,7 @@ public class Application extends Controller {
 
         commandParams.setOxdId(id);
         commandParams.setAcrValues(Lists.newArrayList("basic"));
-        commandParams.setPrompt("login");
+//        commandParams.setPrompt("login");
         return commandParams;
 
     }
@@ -434,7 +434,7 @@ public class Application extends Controller {
 
         commandParams.setOxdId(id);
         commandParams.setAcrValues(Lists.newArrayList("duo"));
-        commandParams.setPrompt("login");
+//        commandParams.setPrompt("login");
         return commandParams;
 
     }
@@ -453,7 +453,7 @@ public class Application extends Controller {
 
         commandParams.setOxdId(id);
         commandParams.setAcrValues(Lists.newArrayList("gplus"));
-        commandParams.setPrompt("login");
+//        commandParams.setPrompt("login");
 
         return commandParams;
 
@@ -472,7 +472,7 @@ public class Application extends Controller {
 
         commandParams.setOxdId(id);
         commandParams.setAcrValues(Lists.newArrayList("u2f"));
-        commandParams.setPrompt("login");
+//        commandParams.setPrompt("login");
 
         return commandParams;
 
@@ -488,7 +488,7 @@ public class Application extends Controller {
 
 
         commandParams.setAuthorizationRedirectUri(GlobalData.AuthorizationRedirectUri);
-//        commandParams.setPostLogoutRedirectUri(GlobalData.PostLogoutRedirectUri);
+        commandParams.setPostLogoutRedirectUri(GlobalData.PostLogoutRedirectUri);
 //        commandParams.setApplicationType(GlobalData.ApplicationType);
 //        commandParams.setRedirectUris(GlobalData.RedirectUris);
 
