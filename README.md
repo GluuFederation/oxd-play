@@ -118,7 +118,7 @@ get_authorization_url command will be useful to get Url to redirect user for log
     GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
 
         commandParams.setOxdId("Registered Sites Oxd-id");//required
-        commandParams.setAcrValues(Lists.newArrayList("basic", "duo")); //optional
+        commandParams.setAcrValues("List of arc values "); //optional
 
 2 - Call "getAuthorizationUrl" method using created GetAuthorizationUrlParams
 
