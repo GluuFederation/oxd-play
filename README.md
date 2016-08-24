@@ -1,15 +1,22 @@
-# oxd-play
+#~~ oxd-play~~
 
 >oxd-play is Oxd Server client implemented in JAVA, using it you can integrate oxD server in your Play frame work applications easily.
 
 
 # Installation
 
-You can install oxd-play by adding following line in build.sbt :
+we have installed oxd-play library to maven repository  so it can be integrated easily using sbt build. 
+
+**sources**
+oxd-play source is available on Github:
+[Github link](https://github.com/GluuFederation/oxd-play)
+
+
+We can install oxd-play by adding following line in build.sbt using :
 
     resolvers += "Gluu repository" at "http://ox.gluu.org/maven"
 
-    libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4.Final"
+    libraryDependencies += "org.xdi" % "oxd-client" % "2.4.4.Final"
 
     libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4-FINAL"
 
@@ -17,18 +24,20 @@ You can install oxd-play by adding following line in build.sbt :
 
 **Note :- empty line required between every single line because sbt build use empty line as line separator**
 
+#Configuration
+We need nothing to configuration before start using oxd-play everything can be set on run time but still we can configure our oxd-server's default configurations. 
 
 ## How to use:
 
----
 
 >1 **Import Oxd-Command class** (all are static methods of "oxdCommands" class.)
 
 ---
 
+Import oxdCommands class from oxd-play by adding this oxd. 
+
     import static org.xdi.oxd.client.oxdCommands.*;
 
----
 
 >2 **register_site**
 
@@ -57,7 +66,7 @@ You can install oxd-play by adding following line in build.sbt :
                 });
 
 ***host - oxd-server host eg.localhost or 127.0.0.1 port - oxd-server listing port (default port is 8099)***
----
+
 
 >3 **update_site__registration**
 
@@ -83,7 +92,6 @@ You can install oxd-play by adding following line in build.sbt :
             }
         });
 
----
 
 >4 **get_authorization_url**
 
@@ -93,7 +101,7 @@ You can install oxd-play by adding following line in build.sbt :
     GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
 
         commandParams.setOxdId("Registered Sites Oxd-id");//required
-        commandParams.setAcrValues("List of arcvalue"); //optional
+        commandParams.setAcrValues(Lists.newArrayList("basic", "duo")); //optional
 
 2 - Call "getAuthorizationUrl" method using created GetAuthorizationUrlParams
 
@@ -111,7 +119,6 @@ You can install oxd-play by adding following line in build.sbt :
         });
 
 
----
 
 >5 **get_tokens_by_code**
 
@@ -142,7 +149,6 @@ You can install oxd-play by adding following line in build.sbt :
                 }
             });
 
----
 
 >6 **get_user_info**
 
@@ -168,9 +174,8 @@ You can install oxd-play by adding following line in build.sbt :
                 }
             });
 
----
 
->7 **Getlogouturi**
+>7 **get_logout_uri**
 
 ---
    1- create GetLogoutUrlParams

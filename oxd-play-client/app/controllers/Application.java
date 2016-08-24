@@ -84,6 +84,7 @@ public class Application extends Controller {
         List<String> scopes = new ArrayList<>();
         if (filescope.exists()) {
 
+
             try {
                 FileInputStream fis = new FileInputStream(filescope);
                 ObjectInputStream ois = new ObjectInputStream(fis);
