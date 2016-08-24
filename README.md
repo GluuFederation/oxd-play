@@ -17,6 +17,7 @@ To use maven  adding following line in build.sbt and sbt build will do rest for 
 -----------------------------------------------------------------------
 
 GitHub source code :- [https://github.com/GluuFederation/oxd-play](https://github.com/GluuFederation/oxd-play)
+
 For demo project :- [https://github.com/GluuFederation/oxd-play/tree/master/oxd-play-client](https://github.com/GluuFederation/oxd-play/tree/master/oxd-play-client)
 
 
