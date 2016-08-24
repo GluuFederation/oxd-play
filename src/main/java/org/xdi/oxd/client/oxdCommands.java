@@ -31,6 +31,7 @@ public class oxdCommands {
             callback.error("AuthorizationRedirectUri is required");
         }
 
+
         try {
             client = new CommandClient(host, port);
 
