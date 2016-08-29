@@ -522,14 +522,9 @@ public class Application extends Controller {
         List<NameValuePair> params = data;
 
         try {
-            if (params.get(2) != null)
-                commandParams.setState(params.get(2).getValue());
 
             if (params.get(1) != null)
-                commandParams.setScopes(Arrays.asList(params.get(1).getValue().split(" ")));
-
-            if (params.get(3) != null)
-                commandParams.setCode((params.get(3).getValue()));
+                commandParams.setCode((params.get(1).getValue()));
         } catch (Exception e) {
             e.printStackTrace();
         }

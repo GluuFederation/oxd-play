@@ -159,12 +159,6 @@ public class oxdCommands {
             callback.error("code is null or empty.");
 
         }
-        if(commandParams.getScopes()== null || commandParams.getScopes().size()==0)
-        {
-            callback.error("code is null or empty.");
-
-        }
-
 
         try {
             client = new CommandClient(host, port);
