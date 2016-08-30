@@ -38,7 +38,7 @@ public class Application extends Controller {
     static GetUserInfoResponse respGetUserInfoResponse;
     static LogoutResponse logoutResponse;
     static File file = new File("cache.txt");
-    static File filescope = new File("scope.txt");
+    static File filescope = new File("scopes.txt");
 
     String error = "";
 
@@ -522,9 +522,14 @@ public class Application extends Controller {
         List<NameValuePair> params = data;
 
         try {
+//            if (params.get(2) != null)
+//                commandParams.setState(params.get(2).getValue());
+//
+//            if (params.get(1) != null)
+//                commandParams.setScopes(Arrays.asList(params.get(1).getValue().split(" ")));
 
-            if (params.get(1) != null)
-                commandParams.setCode((params.get(1).getValue()));
+            if (params.get(3) != null)
+                commandParams.setCode((params.get(3).getValue()));
         } catch (Exception e) {
             e.printStackTrace();
         }
