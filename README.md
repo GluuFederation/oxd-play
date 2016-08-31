@@ -92,7 +92,7 @@ catch (Exception e)
 
 
 
-### 2) update_site__registration
+### 2) update_site_registration
    
 ---
 
