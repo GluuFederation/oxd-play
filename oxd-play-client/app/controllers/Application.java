@@ -8,6 +8,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.xdi.oxd.client.callbacks.*;
 import org.xdi.oxd.common.params.*;
 import org.xdi.oxd.common.response.*;
+import play.core.netty.utils.Cookie;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -18,7 +19,6 @@ import javax.inject.Inject;
 import java.io.*;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -41,6 +41,8 @@ public class Application extends Controller {
     static File filescope = new File("scopes.txt");
 
     String error = "";
+    public static String SESSION_STATE = "";
+    public static String STATE = "";
 
 
     public Result HomePage() {
@@ -50,7 +52,7 @@ public class Application extends Controller {
     }
 
     public Result LoginPage() {
-        return ok(views.html.login.render(getOxdid(),getOxdScopes()));
+        return ok(views.html.login.render(getOxdid(), getOxdScopes()));
     }
 
     public Result RegisterPage() {
@@ -231,7 +233,7 @@ public class Application extends Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return ok(views.html.login.render("Your site is register with oxd-id :" + respRegisterSIte.getOxdId(),getOxdScopes()));
+            return ok(views.html.login.render("Your site is register with oxd-id :" + respRegisterSIte.getOxdId(), getOxdScopes()));
         }
     }
 
@@ -351,7 +353,7 @@ public class Application extends Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return ok(views.html.login.render("updateSiteResponse oxd " + "Your site with oxd-id :" + getOxdid() + "is updated",getOxdScopes()));
+            return ok(views.html.login.render("updateSiteResponse oxd " + "Your site with oxd-id :" + getOxdid() + "is updated", getOxdScopes()));
         }
     }
 
@@ -375,7 +377,7 @@ public class Application extends Controller {
         });
 
         if (respGetAuthoUrl == null) {
-            return ok(views.html.login.render(error,getOxdScopes()));
+            return ok(views.html.login.render(error, getOxdScopes()));
 
         } else {
             return redirect(respGetAuthoUrl.getAuthorizationUrl());
@@ -385,20 +387,14 @@ public class Application extends Controller {
     public GetAuthorizationUrlParams getAuthorizationUrlparamByArcValue(String arcValue) {
         if (arcValue.equals("basic")) {
             return getAuthorizationUrlparamsBasic(getOxdid());
-        } else if ((arcValue.equals("duo")))
-        {
+        } else if ((arcValue.equals("duo"))) {
             return getAuthorizationUrlparamsDuo(getOxdid());
-        }
-          else if ((arcValue.equals("u2f")))
-        {
+        } else if ((arcValue.equals("u2f"))) {
             return getAuthorizationUrlparamsU2f(getOxdid());
-        }
-         else if ((arcValue.equals("gplus")))
-        {
+        } else if ((arcValue.equals("gplus"))) {
             return getAuthorizationUrlparamsGoogle(getOxdid());
-        }
-        else {
-            return  getAuthorizationUrlparamsBasic(getOxdid());
+        } else {
+            return getAuthorizationUrlparamsBasic(getOxdid());
         }
     }
 
@@ -522,12 +518,12 @@ public class Application extends Controller {
         List<NameValuePair> params = data;
 
         try {
-//            if (params.get(2) != null)
+            if (params.get(2) != null)
 //                commandParams.setState(params.get(2).getValue());
-//
-//            if (params.get(1) != null)
+                STATE = params.get(2).getValue();
+            if (params.get(0) != null)
 //                commandParams.setScopes(Arrays.asList(params.get(1).getValue().split(" ")));
-
+                SESSION_STATE = params.get(0).getValue();
             if (params.get(3) != null)
                 commandParams.setCode((params.get(3).getValue()));
         } catch (Exception e) {
@@ -562,15 +558,17 @@ public class Application extends Controller {
             });
 
         if (respGetAuthoUrl == null) {
-            return ok(views.html.login.render(error,getOxdScopes()));
+            return ok(views.html.login.render(error, getOxdScopes()));
 
         }
-        System.out.print(respGetTokensByCodeResponse.toString() + " "+error);
+        System.out.print(respGetTokensByCodeResponse.toString() + " " + error);
         GetUserInfoParams getUserInfoParams = new GetUserInfoParams();
         getUserInfoParams.setOxdId(id);
-        if (respGetTokensByCodeResponse != null)
-            getUserInfoParams.setAccessToken(respGetTokensByCodeResponse.getAccessToken());
+        if (respGetTokensByCodeResponse != null) {
+            System.out.print(respGetTokensByCodeResponse.toString());
 
+            getUserInfoParams.setAccessToken(respGetTokensByCodeResponse.getAccessToken());
+        }
         getUserInfo(GlobalData.host, GlobalData.port, getUserInfoParams, new GetUserInfoCallback() {
             @Override
             public void success(GetUserInfoResponse getUserInfoResponse) {
@@ -584,7 +582,7 @@ public class Application extends Controller {
         });
 
         if (respGetUserInfoResponse == null) {
-            return ok(views.html.login.render(error,getOxdScopes()));
+            return ok(views.html.login.render(error, getOxdScopes()));
 
         } else {
             Profile profile = new Profile();
@@ -595,14 +593,22 @@ public class Application extends Controller {
 
             if (respGetUserInfoResponse.getClaims().get("preferred_username") != null) {
                 profile.setPreferred_username(respGetUserInfoResponse.getClaims().get("preferred_username"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("preferred_username") != null) {
+//                profile.setPreferred_username(respGetUserInfoResponse.getClaims().get("preferred_username"));
+//            }
+            else {
                 profile.setPreferred_username(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("picture") != null) {
                 profile.setPicture(respGetUserInfoResponse.getClaims().get("picture"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("picture") != null) {
+//                profile.setPicture(respGetUserInfoResponse.getClaims().get("picture"));
+//            }
+            else {
                 profile.setPicture(NAList);
 
             }
@@ -610,49 +616,77 @@ public class Application extends Controller {
 
             if (respGetUserInfoResponse.getClaims().get("zoneinfo") != null) {
                 profile.setZoneinfo(respGetUserInfoResponse.getClaims().get("zoneinfo"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("zoneinfo") != null) {
+//                profile.setZoneinfo(respGetUserInfoResponse.getClaims().get("zoneinfo"));
+//            }
+            else {
                 profile.setZoneinfo(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("birthdate") != null) {
                 profile.setBirthdate(respGetUserInfoResponse.getClaims().get("birthdate"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("birthdate") != null) {
+//                profile.setBirthdate(respGetUserInfoResponse.getClaims().get("birthdate"));
+//            }
+            else {
                 profile.setBirthdate(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("gender") != null) {
                 profile.setGender(respGetUserInfoResponse.getClaims().get("gender"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("gender") != null) {
+//                profile.setGender(respGetUserInfoResponse.getClaims().get("gender"));
+//            }
+            else {
                 profile.setGender(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("profile") != null) {
                 profile.setProfile(respGetUserInfoResponse.getClaims().get("profile"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("profile") != null) {
+//                profile.setProfile(respGetUserInfoResponse.getClaims().get("profile"));
+//            }
+            else {
                 profile.setProfile(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("given_name") != null) {
                 profile.setGiven_name(respGetUserInfoResponse.getClaims().get("given_name"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("given_name") != null) {
+//                profile.setGiven_name(respGetUserInfoResponse.getClaims().get("given_name"));
+//            }
+            else {
                 profile.setGiven_name(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("nickname") != null) {
                 profile.setNickname(respGetUserInfoResponse.getClaims().get("nickname"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("nickname") != null) {
+//                profile.setNickname(respGetUserInfoResponse.getClaims().get("nickname"));
+//            }
+            else {
                 profile.setNickname(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("email") != null) {
                 profile.setEmail(respGetUserInfoResponse.getClaims().get("email"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("email") != null) {
+//                profile.setEmail(respGetUserInfoResponse.getClaims().get("email"));
+//            }
+            else {
                 profile.setEmail(NAList);
 
             }
@@ -660,21 +694,33 @@ public class Application extends Controller {
 
             if (respGetUserInfoResponse.getClaims().get("family_name") != null) {
                 profile.setFamily_name(respGetUserInfoResponse.getClaims().get("family_name"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("family_name") != null) {
+//                profile.setFamily_name(respGetUserInfoResponse.getClaims().get("family_name"));
+//            }
+            else {
                 profile.setFamily_name(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("name") != null) {
                 profile.setName(respGetUserInfoResponse.getClaims().get("name"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("name") != null) {
+//                profile.setName(respGetUserInfoResponse.getClaims().get("name"));
+//            }
+            else {
                 profile.setName(NAList);
 
             }
 
             if (respGetUserInfoResponse.getClaims().get("locale") != null) {
                 profile.setLocale(respGetUserInfoResponse.getClaims().get("locale"));
-            } else {
+            }
+//            else if (respGetTokensByCodeResponse.getIdTokenClaims().get("locale") != null) {
+//                profile.setLocale(respGetUserInfoResponse.getClaims().get("locale"));
+//            }
+            else {
                 profile.setLocale(NAList);
 
             }
@@ -690,12 +736,26 @@ public class Application extends Controller {
 
 
     public Result logout() {
+
+
         GetLogoutUrlParams getLogoutUrlParams = new GetLogoutUrlParams();
         getLogoutUrlParams.setOxdId(getOxdid());
+        getLogoutUrlParams.setIdTokenHint(respGetTokensByCodeResponse.getIdToken());
+        getLogoutUrlParams.setPostLogoutRedirectUri(GlobalData.PostLogoutRedirectUri);
+        if (SESSION_STATE != null && SESSION_STATE.length() > 2)
+            getLogoutUrlParams.setSessionState(SESSION_STATE);
+        if (STATE != null && STATE.length() > 2)
+            getLogoutUrlParams.setState(STATE);
+
 
         getLogoutUri(GlobalData.host, GlobalData.port, getLogoutUrlParams, new GetlogoutUrlCallback() {
             @Override
             public void success(LogoutResponse AlogoutResponse) {
+                respGetTokensByCodeResponse = null;
+                respGetUserInfoResponse = null;
+                respGetAuthoUrl = null;
+                session().clear();
+                flash().clear();
                 Application.logoutResponse = AlogoutResponse;//successful  call will return LogoutResponse
             }
 
@@ -706,7 +766,7 @@ public class Application extends Controller {
         });
 
         if (logoutResponse == null) {
-            return ok(views.html.login.render(error,getOxdScopes()));
+            return ok(views.html.login.render(error, getOxdScopes()));
         } else {
             return redirect(logoutResponse.getUri());
         }
