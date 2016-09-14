@@ -134,10 +134,8 @@ try
 //create GetAuthorizationUrlParams
 
             GetAuthorizationUrlParams commandParams = new GetAuthorizationUrlParams();
-            commandParams.setOxdId("Registered Sites Oxd-id");//required
-            commandParams.setAcrValues("List of arc values"); //optional
-            commandParams.setState("State from redirected uri");//optional
-            commandParams.setScopes("Scope from redirected uri");//required
+            commandParams.setOxdId(id);//required
+           commandParams.setAcrValues(Lists of arcvalues); //optional
 
 // Call "getAuthorizationUrl" method using created GetAuthorizationUrlParams
 
