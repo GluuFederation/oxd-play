@@ -154,6 +154,12 @@ public class oxdCommands {
             callback.error("oxd_id is null or empty.");
 
         }
+        if(commandParams.getState() == null || commandParams.getState().length()==0)
+        {
+            callback.error("oxd_id is null or empty.");
+
+
+
         if(commandParams.getCode()== null || commandParams.getCode().length()==0)
         {
             callback.error("code is null or empty.");

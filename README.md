@@ -170,8 +170,7 @@ try
 
             GetTokensByCodeParams getTokensByCodeParams = new GetTokensByCodeParams();
             commandParams.setOxdId("Registered Site oxd-id code");//required
-            commandParams.setState("State from op redirected uri");//optional
-            commandParams.setScopes("Scope from op redirected uri");//required
+            commandParams.setState("State from op redirected uri");//required
             commandParams.setCode("Code from op redirected uri");//required
 
 // Call "getToken" method using created GetTokensByCodeParams

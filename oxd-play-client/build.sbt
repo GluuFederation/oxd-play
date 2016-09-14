@@ -17,7 +17,6 @@ routesGenerator := InjectedRoutesGenerator
 
 resolvers += "Gluu repository" at "http://ox.gluu.org/maven"
 
-libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4.Final"
 
 
 libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4-FINAL"

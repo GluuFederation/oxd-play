@@ -519,7 +519,7 @@ public class Application extends Controller {
 
         try {
             if (params.get(2) != null)
-//                commandParams.setState(params.get(2).getValue());
+                commandParams.setState(params.get(2).getValue());
                 STATE = params.get(2).getValue();
             if (params.get(0) != null)
 //                commandParams.setScopes(Arrays.asList(params.get(1).getValue().split(" ")));
