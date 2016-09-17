@@ -21,8 +21,11 @@ To use maven  adding following line in build.sbt and sbt build will do rest for 
 
 Import oxdCommands class from oxd-play by adding this oxd. 
 
+```java
     import static org.xdi.oxd.client.oxdCommands.*;
-
+    public static org.xdi.oxd.client.oxdCommands oxdCommands = new oxdCommands(GlobalData.host,GlobalData.port);
+    //oxd_ host - oxd-server host eg.localhost or 127.0.0.1 port - oxd-server listing port (default port is 8099)
+```
 
 
 -----------------------------------------------------------------------
@@ -68,7 +71,7 @@ try{
 
 // Call "registerSite" method using created registerSiteParams
 
-        registerSite(oxd_host,oxd_port, registerSiteParams, new RegisterSiteCallback() {
+        oxdCommands.registerSite(registerSiteParams, new RegisterSiteCallback() {
                     @Override
                     public void success(RegisterSiteResponse registerSiteResponse) {
                     //this is your successful response for register_site command
@@ -86,7 +89,6 @@ catch (Exception e)
     e.printStackTrace();
  }
  
-//oxd_ host - oxd-server host eg.localhost or 127.0.0.1 port - oxd-server listing port (default port is 8099)
 
 ```
 
@@ -105,7 +107,7 @@ catch (Exception e)
 
 //Call "updateSite" method using created registerSiteParams
 
-        updateSite(oxd_host,oxd_port, UpdateSiteParams, new UpdateSiteCallback() {
+        oxdCommands.updateSite(UpdateSiteParams, new UpdateSiteCallback() {
                    @Override
                    public void success(UpdateSiteResponse updateSiteResponse) {
                          //this is your successful response for update_site__registration command 
@@ -139,7 +141,7 @@ try
 
 // Call "getAuthorizationUrl" method using created GetAuthorizationUrlParams
 
-            getAuthorizationUrl(oxd_host,oxd_port,GetAuthorizationUrlParams, new GetAuthorizationUrlCallback() {
+           oxdCommands.getAuthorizationUrl(GetAuthorizationUrlParams, new GetAuthorizationUrlCallback() {
                     @Override
                    public void success(GetAuthorizationUrlResponse getAuthorizationUrlResponse) {
                                      //successful  call will return getAuthorizationUrlResponse
@@ -173,7 +175,7 @@ try
 
 // Call "getToken" method using created GetTokensByCodeParams
 
-            getToken(host, port, getTokensByCodeParams, new GetTokensByCodeCallback() {
+            oxdCommands.getToken(getTokensByCodeParams, new GetTokensByCodeCallback() {
                          public void success(GetTokensByCodeResponse getTokensByCodeResponse) {
                                  //successful  call will return GetTokensByCodeResponse
                                  //getTokensByCodeResponse.getAccessToken() to get access Token
@@ -206,7 +208,7 @@ try
 
 // Call "getUserInfo" method using created GetTokensByCodeParams
 
-    getUserInfo(oxd_host,oxd_port, getUserInfoParams, new GetUserInfoCallback() {
+    oxdCommands.getUserInfo(getUserInfoParams, new GetUserInfoCallback() {
             @Override
             public void success(GetUserInfoResponse getUserInfoResponse) {
                    //successful  call will return GetUserInfoResponse
@@ -237,7 +239,7 @@ try{
 
 // Call "getLogoutUri" method using created GetLogoutUrlParams
 
-        getLogoutUri(oxd_host,oxd_port, getLogoutUrlParams, new GetlogoutUrlCallback() {
+        oxdCommands.getLogoutUri(getLogoutUrlParams, new GetlogoutUrlCallback() {
             @Override
             public void success(LogoutResponse AlogoutResponse) {
                 //successful  call will return LogoutResponse

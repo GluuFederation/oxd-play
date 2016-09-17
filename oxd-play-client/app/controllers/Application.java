@@ -6,6 +6,7 @@ import model.Profile;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.xdi.oxd.client.callbacks.*;
+import org.xdi.oxd.client.oxdCommands;
 import org.xdi.oxd.common.params.*;
 import org.xdi.oxd.common.response.*;
 import play.core.netty.utils.Cookie;
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static org.xdi.oxd.client.oxdCommands.*;
 
 
 public class Application extends Controller {
@@ -43,6 +43,7 @@ public class Application extends Controller {
     String error = "";
     public static String SESSION_STATE = "";
     public static String STATE = "";
+    public static org.xdi.oxd.client.oxdCommands oxdCommands = new oxdCommands(GlobalData.host,GlobalData.port);
 
 
     public Result HomePage() {
@@ -164,8 +165,7 @@ public class Application extends Controller {
         if (form.get("email") != null) {
             params.setContacts(Lists.newArrayList(form.get("email")));
         }
-        registerSite(GlobalData.host,
-                GlobalData.port, getregisterSiteParams(params), new RegisterSiteCallback() {
+        oxdCommands.registerSite(getregisterSiteParams(params), new RegisterSiteCallback() {
                     @Override
                     public void success(RegisterSiteResponse registerSiteResponse) {
                         respRegisterSIte = registerSiteResponse;
@@ -303,7 +303,7 @@ public class Application extends Controller {
         }
 
 
-        updateSite(GlobalData.host, GlobalData.port, params, new UpdateSiteCallback() {
+        oxdCommands.updateSite( params, new UpdateSiteCallback() {
             @Override
             public void success(UpdateSiteResponse updateSiteResponse) {
                 respUpdateSite = updateSiteResponse;
@@ -364,7 +364,7 @@ public class Application extends Controller {
      */
     public Result getAuthorizationUrlCall(String arcValue) {
 
-        getAuthorizationUrl(GlobalData.host, GlobalData.port, getAuthorizationUrlparamByArcValue(arcValue), new GetAuthorizationUrlCallback() {
+        oxdCommands.getAuthorizationUrl(getAuthorizationUrlparamByArcValue(arcValue), new GetAuthorizationUrlCallback() {
             @Override
             public void success(GetAuthorizationUrlResponse getAuthorizationUrlResponse) {
                 respGetAuthoUrl = getAuthorizationUrlResponse;
@@ -520,7 +520,7 @@ public class Application extends Controller {
         try {
             if (params.get(2) != null)
                 commandParams.setState(params.get(2).getValue());
-                STATE = params.get(2).getValue();
+            STATE = params.get(2).getValue();
             if (params.get(0) != null)
 //                commandParams.setScopes(Arrays.asList(params.get(1).getValue().split(" ")));
                 SESSION_STATE = params.get(0).getValue();
@@ -545,7 +545,7 @@ public class Application extends Controller {
         String id = getOxdid();
 
         if (respGetTokensByCodeResponse == null)
-            getToken(GlobalData.host, GlobalData.port, getTokenParams(id), new GetTokensByCodeCallback() {
+            oxdCommands.getToken( getTokenParams(id), new GetTokensByCodeCallback() {
                 @Override
                 public void success(GetTokensByCodeResponse getTokensByCodeResponse) {
                     respGetTokensByCodeResponse = getTokensByCodeResponse;
@@ -569,7 +569,7 @@ public class Application extends Controller {
 
             getUserInfoParams.setAccessToken(respGetTokensByCodeResponse.getAccessToken());
         }
-        getUserInfo(GlobalData.host, GlobalData.port, getUserInfoParams, new GetUserInfoCallback() {
+        oxdCommands.getUserInfo(getUserInfoParams, new GetUserInfoCallback() {
             @Override
             public void success(GetUserInfoResponse getUserInfoResponse) {
                 respGetUserInfoResponse = getUserInfoResponse;
@@ -748,7 +748,7 @@ public class Application extends Controller {
             getLogoutUrlParams.setState(STATE);
 
 
-        getLogoutUri(GlobalData.host, GlobalData.port, getLogoutUrlParams, new GetlogoutUrlCallback() {
+        oxdCommands.getLogoutUri(getLogoutUrlParams, new GetlogoutUrlCallback() {
             @Override
             public void success(LogoutResponse AlogoutResponse) {
                 respGetTokensByCodeResponse = null;
