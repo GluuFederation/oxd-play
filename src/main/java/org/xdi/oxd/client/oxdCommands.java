@@ -207,7 +207,7 @@ public class oxdCommands {
      * @param callback      return success or error
      */
 
-    public void getUserInfo(String host, int port, GetUserInfoParams commandParams, GetUserInfoCallback callback) {
+    public void getUserInfo(GetUserInfoParams commandParams, GetUserInfoCallback callback) {
         CommandClient client = null;
 
         GetUserInfoResponse respGetUserInfoResponse = null;
