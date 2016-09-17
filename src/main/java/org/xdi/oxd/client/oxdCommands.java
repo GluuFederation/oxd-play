@@ -12,23 +12,32 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
- *This class will be useful to crate connection with oxd-server and calling required commands to oxd-server
+ * This class will be useful to crate connection with oxd-server and calling required commands to oxd-server
  */
 public class oxdCommands {
 
+    String host;
+    int port;
+
+    public oxdCommands(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
     /**
      * use to call Register site commad
-     * @param host oxd-server host eg.localhost or 127.0.0.1
-     * @param port oxd-server listing port default  port is 8099
+     *
      * @param commandParams params for register site command
-     * @param callback return success or error
+     * @param callback      return success or error
      */
-    public static void registerSite(String host, int port, RegisterSiteParams commandParams, RegisterSiteCallback callback) {
+    public void registerSite(RegisterSiteParams commandParams, RegisterSiteCallback callback) {
         CommandClient client = null;
         RegisterSiteResponse respRegisterSIte = null;
 
         if (commandParams.getAuthorizationRedirectUri() == null) {
             callback.error("AuthorizationRedirectUri is required");
+            callback.success(null);
+            return;
         }
 
 
@@ -59,16 +68,17 @@ public class oxdCommands {
 
     /**
      * use to  update site configuration
-     * @param host oxd-server host eg.localhost or 127.0.0.1
-     * @param port oxd-server listing port default  port is 8099
+     *
      * @param commandParams params for Update site command
-     * @param callback return success or error
+     * @param callback      return success or error
      */
-    public static void updateSite(String host, int port, UpdateSiteParams commandParams, UpdateSiteCallback callback) {
+    public void updateSite(UpdateSiteParams commandParams, UpdateSiteCallback callback) {
         CommandClient client = null;
         UpdateSiteResponse respUpdateSite = null;
         if (commandParams.getAuthorizationRedirectUri() == null) {
             callback.error("AuthorizationRedirectUri is required");
+            callback.success(null);
+            return;
         }
 
         try {
@@ -96,19 +106,17 @@ public class oxdCommands {
 
     /**
      * use to get Authorization URl
-     * @param host oxd-server host eg.localhost or 127.0.0.1
-     * @param port oxd-server listing port default  port is 8099
      * @param commandParams params for getiing Authorization URL
-     * @param callback return success or error
+     * @param callback      return success or error
      */
-    public static void getAuthorizationUrl(String host, int port, GetAuthorizationUrlParams commandParams, GetAuthorizationUrlCallback callback) {
+    public void getAuthorizationUrl(GetAuthorizationUrlParams commandParams, GetAuthorizationUrlCallback callback) {
         CommandClient client = null;
         GetAuthorizationUrlResponse respGetAuthoUrl = null;
 
-        if(commandParams.getOxdId() == null || commandParams.getOxdId().length()==0)
-        {
+        if (commandParams.getOxdId() == null || commandParams.getOxdId().length() == 0) {
             callback.error("oxd_id is null or empty.");
-
+            callback.success(null);
+            return;
         }
 
         try {
@@ -116,6 +124,7 @@ public class oxdCommands {
 
             final Command command = new Command(CommandType.GET_AUTHORIZATION_URL);
             command.setParamsObject(commandParams);
+
 
             respGetAuthoUrl = client.send(command).dataAsResponse(GetAuthorizationUrlResponse.class);
             if (respGetAuthoUrl != null) {
@@ -138,31 +147,32 @@ public class oxdCommands {
 
     /**
      * use to get token on successful login
-     * @param host oxd-server host eg.localhost or 127.0.0.1
-     * @param port oxd-server listing port default  port is 8099
      * @param commandParams params for getiing Token after successful login and redirect to authorize url
-     * @param callback return success or error
+     * @param callback      return success or error
      */
 
-    public static void  getToken(String host, int port, GetTokensByCodeParams commandParams, GetTokensByCodeCallback callback) {
+    public void getToken(GetTokensByCodeParams commandParams, GetTokensByCodeCallback callback) {
         CommandClient client = null;
         GetTokensByCodeResponse respGetTokensByCodeResponse = null;
 
 
-        if(commandParams.getOxdId() == null || commandParams.getOxdId().length()==0)
-        {
+        if (commandParams.getOxdId() == null || commandParams.getOxdId().length() == 0) {
             callback.error("oxd_id is null or empty.");
+            callback.success(null);
+            return;
 
         }
-        if(commandParams.getState() == null || commandParams.getState().length()==0)
-        {
-            callback.error("oxd_id is null or empty.");
+        if (commandParams.getState() == null || commandParams.getState().length() == 0) {
+            callback.error("State is null or empty.");
+            callback.success(null);
+            return;
 
+        }
 
-
-        if(commandParams.getCode()== null || commandParams.getCode().length()==0)
-        {
+        if (commandParams.getCode() == null || commandParams.getCode().length() == 0) {
             callback.error("code is null or empty.");
+            callback.success(null);
+            return;
 
         }
 
@@ -193,24 +203,24 @@ public class oxdCommands {
 
     /**
      * use to get User info
-     * @param host oxd-server host eg.localhost or 127.0.0.1
-     * @param port oxd-server listing port default  port is 8099
      * @param commandParams params for getting User Info using user token
-     * @param callback return success or error
+     * @param callback      return success or error
      */
 
-    public static void getUserInfo(String host, int port, GetUserInfoParams commandParams, GetUserInfoCallback callback) {
+    public void getUserInfo(String host, int port, GetUserInfoParams commandParams, GetUserInfoCallback callback) {
         CommandClient client = null;
 
         GetUserInfoResponse respGetUserInfoResponse = null;
-        if(commandParams.getOxdId() == null || commandParams.getOxdId().length()==0)
-        {
+        if (commandParams.getOxdId() == null || commandParams.getOxdId().length() == 0) {
             callback.error("oxd_id is null or empty.");
+            callback.success(null);
+            return;
 
         }
-        if(commandParams.getAccessToken() == null || commandParams.getAccessToken().length()==0)
-        {
+        if (commandParams.getAccessToken() == null || commandParams.getAccessToken().length() == 0) {
             callback.error("AccessToken is null or empty.");
+            callback.success(null);
+            return;
 
         }
         try {
@@ -243,20 +253,19 @@ public class oxdCommands {
 
     /**
      * use to get logout uri
-     * @param host oxd-server host eg.localhost or 127.0.0.1
-     * @param port oxd-server listing port default  port is 8099
      * @param commandParams params for getting  Logout URI to logout user from application and close user session on server site.
-     * @param callback return success or error
+     * @param callback      return success or error
      */
 
 
-    public static void getLogoutUri(String host, int port, GetLogoutUrlParams commandParams, GetlogoutUrlCallback callback) {
+    public void getLogoutUri(GetLogoutUrlParams commandParams, GetlogoutUrlCallback callback) {
         CommandClient client = null;
 
         LogoutResponse logoutResponse = null;
-        if(commandParams.getOxdId() == null || commandParams.getOxdId().length()==0)
-        {
+        if (commandParams.getOxdId() == null || commandParams.getOxdId().length() == 0) {
             callback.error("oxd_id is null or empty.");
+            callback.success(null);
+            return;
 
         }
         try {

@@ -28,4 +28,4 @@ libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4-FINAL"
 
 
 
-fork in run := true
+fork in run := false

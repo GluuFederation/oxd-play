@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>oxd.play.java</groupId>
     <artifactId>oxd-play</artifactId>
-    <version>2.4.4-FINAL</version>
+    <version>2.4.4</version>
 
 
     <name>oxD Java Client for play</name>
