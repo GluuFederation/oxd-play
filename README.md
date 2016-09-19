@@ -12,7 +12,7 @@ To use maven  adding following line in build.sbt and sbt build will do rest for 
 
     libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4"
 
-    libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4-FINAL"
+    libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4"
 
 
  **Import Oxd-Command class** (all are static methods of "oxdCommands" class.)
