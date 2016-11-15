@@ -3,6 +3,8 @@ package org.xdi.oxd.client;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.xdi.oxd.client.callbacks.*;
 import org.xdi.oxd.common.Command;
 import org.xdi.oxd.common.CommandResponse;
@@ -420,15 +422,17 @@ public class oxdCommands {
         RsCheckAccessResponse rsCheckAccessResponse;
         RpGetRptResponse getRPT;
         RpGetRptResponse getGAT;
+        JSONObject jsonObject = new JSONObject();
+        message = "";
         RsProtectResponse rsProtectResponse = RsResourceProtect(Siteid, new RsResourceProtectCallback() {
             @Override
             public void success(RsProtectResponse rsProtectResponse) {
-                message = "success";
+                message = message + " success RsResourceProtect";
             }
 
             @Override
             public void error(String error) {
-                message = "error in RsResourceProtect";
+                message = message + " error in RsResourceProtect";
 
             }
         });
@@ -437,26 +441,26 @@ public class oxdCommands {
         rsCheckAccessResponse = RsCheckAccessString(oxdId, new RsCheckAccessCallback() {
             @Override
             public void success(RsCheckAccessResponse rsCheckAccessResponse) {
-                message = "success";
+                message = message + " success RsCheckAccessString";
 
             }
 
             @Override
             public void error(String error) {
-                message = "error in RsCheckAccessString";
+                message = message + " error in RsCheckAccessString";
 
             }
         });
         getGAT = GetGAT(oxdId, new GetGATCallback() {
             @Override
             public void success(RpGetRptResponse rpGetRptResponse) {
-                message = "success";
+                message = message + " success GetGAT";
 
             }
 
             @Override
             public void error(String error) {
-                message = "error in GetGAT";
+                message = message + " error in GetGAT";
 
             }
         });
@@ -464,16 +468,49 @@ public class oxdCommands {
         getRPT = GetRPT(oxdId, new RpGetRptCallback() {
             @Override
             public void success(RpGetRptResponse rpGetRptResponse) {
-                message = "success";
+                message = message + " success GetRPT";
 
             }
 
             @Override
             public void error(String error) {
-                message = "error in GetRPT";
+                message = message + " error in GetRPT";
 
             }
         });
+
+        try {
+            if (rsCheckAccessResponse != null &&
+                    getRPT != null &&
+                    getGAT != null &&
+                    rsProtectResponse != null) {
+                message = "Test Passed " + message;
+                jsonObject.put("status", "success");
+                jsonObject.put("details", message);
+            } else if (rsCheckAccessResponse == null) {
+                message = message + " error in RsCheckAccessString";
+                jsonObject.put("status", "error");
+                jsonObject.put("details", message);
+            } else if (getRPT == null) {
+                message = message + " error in getRPT";
+                jsonObject.put("status", "error");
+                jsonObject.put("details", message);
+            } else if (getGAT == null) {
+                message = message + " error in getGAT";
+                jsonObject.put("status", "error");
+                jsonObject.put("details", message);
+            } else if (rsProtectResponse == null) {
+                message = message + " error in RsResourceProtect";
+                jsonObject.put("status", "error");
+                jsonObject.put("details", message);
+
+            }
+            message = jsonObject.toString();
+        } catch (JSONException e) {
+
+
+        }
+
 
         return message;
     }
