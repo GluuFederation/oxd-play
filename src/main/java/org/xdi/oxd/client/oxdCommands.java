@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import static junit.framework.Assert.assertEquals;
+
 /**
  * This class will be useful to crate connection with oxd-server and calling required commands to oxd-server
  */
@@ -25,8 +27,9 @@ public class oxdCommands {
 
     String host;
     int port;
-    String RsProtectList = "{\"resources\":[{\"path\":\"/ws/phone\",\"conditions\":[{\"httpMethods\":[\"GET\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/view\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/view\"]},{\"httpMethods\":[\"PUT\", \"POST\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/add\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/add\"]},{\"httpMethods\":[\"DELETE\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/remove\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/remove\"]}]}]}";
+    String RsProtectList = "{\"resources\":[{\"path\":\"/scim\",\"conditions\":[{\"httpMethods\":[\"GET\"],\"scopes\":[\"https://scim-test.gluu.org/identity/seam/resource/restv1/scim/vas1\"],\"ticketScopes\":[\"https://scim-test.gluu.org/identity/seam/resource/restv1/scim/vas1\"]}]}]}";
     private String message = "";
+    private String ticket;
 
     public oxdCommands(String host, int port) {
         this.host = host;
@@ -343,14 +346,14 @@ public class oxdCommands {
     }
 
 
-    public RsCheckAccessResponse RsCheckAccessString(String siteId, RsCheckAccessCallback rsCheckAccessCallback) throws IOException {
+    public RsCheckAccessResponse RsCheckAccessString(String siteId, String httpMethod, String path, String rpt, RsCheckAccessCallback rsCheckAccessCallback) throws IOException {
         CommandClient client;
 
         final RsCheckAccessParams params = new RsCheckAccessParams();
         params.setOxdId(siteId);
-        params.setHttpMethod("GET");
-        params.setPath("/rest/photo");
-        params.setRpt("d6s-54asr-vfgm6-388dsl");
+        params.setHttpMethod(httpMethod);
+        params.setPath(path);
+        params.setRpt(rpt);
 
         final Command command = new Command(CommandType.RS_CHECK_ACCESS).setParamsObject(params);
 
@@ -371,6 +374,7 @@ public class oxdCommands {
     public RpGetRptResponse GetRPT(String siteId, RpGetRptCallback rpGetRptCallback) throws IOException {
         CommandClient client;
         final RpGetRptParams params = new RpGetRptParams();
+        params.setForceNew(true);
         params.setOxdId(siteId);
         client = new CommandClient(host, port);
 
@@ -392,7 +396,7 @@ public class oxdCommands {
         CommandClient client;
         final RpGetGatParams params = new RpGetGatParams();
         params.setOxdId(siteId);
-        params.setScopes(Lists.newArrayList("http://photoz.example.com/dev/actions/all"));
+        params.setScopes(Lists.newArrayList("uma_authorization"));
 
         final Command command = new Command(CommandType.RP_GET_GAT);
         command.setParamsObject(params);
@@ -410,6 +414,19 @@ public class oxdCommands {
         return rptResponse;
     }
 
+
+    public RpAuthorizeRptResponse authorizeRpt(String sideOxd, String rpt, String ticket) throws IOException {
+        final RpAuthorizeRptParams params = new RpAuthorizeRptParams();
+        params.setOxdId(sideOxd);
+        params.setRpt(rpt);
+        params.setTicket(ticket);
+
+        CommandClient client = new CommandClient(host, port);
+        final RpAuthorizeRptResponse resp = client.send(new Command(CommandType.RP_AUTHORIZE_RPT, params)).dataAsResponse(RpAuthorizeRptResponse.class);
+        return resp;
+    }
+
+
     public static RsResourceList resourceList(String rsProtect) throws IOException {
         rsProtect = StringUtils.replace(rsProtect, "'", "\"");
         return Jackson.createJsonMapper().readValue(rsProtect, RsResourceList.class);
@@ -424,83 +441,150 @@ public class oxdCommands {
         RpGetRptResponse getGAT;
         JSONObject jsonObject = new JSONObject();
         message = "";
+        ticket = "";
+
         RsProtectResponse rsProtectResponse = RsResourceProtect(Siteid, new RsResourceProtectCallback() {
             @Override
             public void success(RsProtectResponse rsProtectResponse) {
-                message = message + " success RsResourceProtect";
+                message = message + " 'success RsResourceProtect'";
             }
 
             @Override
             public void error(String error) {
-                message = message + " error in RsResourceProtect";
+                message = message + " 'error in RsResourceProtect'";
 
             }
         });
 
-
-        rsCheckAccessResponse = RsCheckAccessString(oxdId, new RsCheckAccessCallback() {
+        rsCheckAccessResponse = RsCheckAccessString(oxdId, "GET", "/scim", "", new RsCheckAccessCallback() {
             @Override
             public void success(RsCheckAccessResponse rsCheckAccessResponse) {
-                message = message + " success RsCheckAccessString";
+                message = message + " 'success RsCheckAccessString'";
 
             }
 
             @Override
             public void error(String error) {
-                message = message + " error in RsCheckAccessString";
+                message = message + " 'error in RsCheckAccessString'";
 
             }
         });
-        getGAT = GetGAT(oxdId, new GetGATCallback() {
-            @Override
-            public void success(RpGetRptResponse rpGetRptResponse) {
-                message = message + " success GetGAT";
 
-            }
+        ticket = rsCheckAccessResponse.getTicket();
+        if (rsCheckAccessResponse.getAccess().equals("denied")) {
+            message = message + " 'Access denied first time'";
+        } else {
+            message = message + " 'Access granted first time'";
 
-            @Override
-            public void error(String error) {
-                message = message + " error in GetGAT";
-
-            }
-        });
+        }
 
         getRPT = GetRPT(oxdId, new RpGetRptCallback() {
             @Override
             public void success(RpGetRptResponse rpGetRptResponse) {
-                message = message + " success GetRPT";
+                message = message + " 'success GetRPT'";
 
             }
 
             @Override
             public void error(String error) {
-                message = message + " error in GetRPT";
+                message = message + " 'error in GetRPT'";
 
             }
         });
 
+        if (getRPT != null) {
+            rsCheckAccessResponse = RsCheckAccessString(oxdId, "GET", "/scim", getRPT.getRpt(), new RsCheckAccessCallback() {
+                @Override
+                public void success(RsCheckAccessResponse rsCheckAccessResponse) {
+                    message = message + " 'success RsCheckAccessString'";
+
+                }
+
+                @Override
+                public void error(String error) {
+                    message = message + " 'error in RsCheckAccessString'";
+
+                }
+            });
+
+            if (rsCheckAccessResponse.getAccess().equals("denied")) {
+                message = message + " 'Access denied second time'";
+            } else {
+                message = message + " 'Access granted second time'";
+
+            }
+            RpAuthorizeRptResponse rsAuth = authorizeRpt(oxdId, getRPT.getRpt(), ticket);
+
+            if (rsAuth != null) {
+                rsCheckAccessResponse = RsCheckAccessString(oxdId, "GET", "/scim", getRPT.getRpt(), new RsCheckAccessCallback() {
+                    @Override
+                    public void success(RsCheckAccessResponse rsCheckAccessResponse) {
+
+                    }
+
+                    @Override
+                    public void error(String error) {
+
+                    }
+                });
+
+                if (rsCheckAccessResponse.getAccess().equals("denied")) {
+                    try {
+                        message = "can't authorized rpt";
+                        jsonObject.put("status", "error");
+                        jsonObject.put("details", message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        jsonObject.put("status", "success");
+                        jsonObject.put("details", message);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+
+//        getGAT = GetGAT(oxdId, new GetGATCallback() {
+//            @Override
+//            public void success(RpGetRptResponse rpGetRptResponse) {
+//                message = message + " 'success GetGAT'";
+//
+//            }
+//
+//            @Override
+//            public void error(String error) {
+//                message = message + " 'error in GetGAT'";
+//
+//            }
+//        });
         try {
             if (rsCheckAccessResponse != null &&
                     getRPT != null &&
-                    getGAT != null &&
                     rsProtectResponse != null) {
                 message = "Test Passed " + message;
                 jsonObject.put("status", "success");
                 jsonObject.put("details", message);
             } else if (rsCheckAccessResponse == null) {
-                message = message + " error in RsCheckAccessString";
+                message = message + " 'error in RsCheckAccessString'\n";
                 jsonObject.put("status", "error");
                 jsonObject.put("details", message);
             } else if (getRPT == null) {
-                message = message + " error in getRPT";
+                message = message + " 'error in getRPT'\n";
                 jsonObject.put("status", "error");
                 jsonObject.put("details", message);
-            } else if (getGAT == null) {
-                message = message + " error in getGAT";
-                jsonObject.put("status", "error");
-                jsonObject.put("details", message);
-            } else if (rsProtectResponse == null) {
-                message = message + " error in RsResourceProtect";
+            }
+//            else if (getGAT == null) {
+//                message = message + " 'error in getGAT'\n";
+//                jsonObject.put("status", "error");
+//                jsonObject.put("details", message);
+//            }
+            else if (rsProtectResponse == null) {
+                message = message + " 'error in RsResourceProtect'\n";
                 jsonObject.put("status", "error");
                 jsonObject.put("details", message);
 
