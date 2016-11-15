@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
 
 /**
  * This class will be useful to crate connection with oxd-server and calling required commands to oxd-server
