@@ -10,9 +10,9 @@ To use maven  adding following line in build.sbt and sbt build will do rest for 
 
     resolvers += "Gluu repository" at "http://ox.gluu.org/maven"
 
-    libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4.Final"
+    libraryDependencies += "org.xdi" % "oxd-java" % "2.4.4"
 
-    libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4-FINAL"
+    libraryDependencies += "oxd.play.java" % "oxd-play" % "2.4.4"
 
 
  **Import Oxd-Command class** (all are static methods of "oxdCommands" class.)
@@ -23,8 +23,8 @@ Import oxdCommands class from oxd-play by adding this oxd.
 
 ```java
     import static org.xdi.oxd.client.oxdCommands.*;
-    public static org.xdi.oxd.client.oxdCommands oxdCommands = new oxdCommands(GlobalData.host,GlobalData.port);
-    //oxd_ host - oxd-server host eg.localhost or 127.0.0.1 port - oxd-server listing port (default port is 8099)
+    public static org.xdi.oxd.client.oxdCommands oxdCommands = new oxdCommands(oxd_host,oxd_port);
+    //(oxd_host = oxd-server host eg.localhost or 127.0.0.1) /(oxd_port = oxd-server listing port (default port is 8099))
 ```
 
 
