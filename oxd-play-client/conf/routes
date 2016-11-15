@@ -19,6 +19,7 @@ GET        /updateSiteCall            controllers.Application.updateSiteCall()
 
 GET        /getTokenbyCodeCall        controllers.Application.getTokenbyCodeCall()
 
+GET        /getFullUmaTest        controllers.Application.FullUmaTest()
 
 
 GET        /logout                    controllers.Application.logout()

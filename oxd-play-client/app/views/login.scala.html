@@ -2,94 +2,149 @@
 <!DOCTYPE html>
 
 <html>
-<head>
-    <title>OXD DEMO</title>
+    <head>
+        <title>OXD DEMO</title>
+        <script src="@routes.Assets.versioned("javascripts/jquery-1.9.0.min.js")"></script>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-    <style type="text/css">
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <style type="text/css">
         .button_wrapper {
             margin: 0 0 20px;
-             display: inline-block;
+            display: inline-block;
 
         }
+
         .image_inner_wrapper a {
             display: inline-block;
             margin: 0 10px 0 0;
             padding: 0;
         }
+
         .heading {
             color: #77b954;
             margin: 0 0 20px 0;
             font-size: 16px;
         }
+
         table {
             border-spacing: 0;
             border-collapse: collapse;
             border: 1px solid #ddd;
             margin: 0 auto 20px;
         }
-        table>thead>tr>th,
-         table>tbody>tr>td{
-         border: 1px solid #000 !important;
-         height: 30px;
-         padding: 10px;
-       }
-       table>thead>tr>th {
+
+        table > thead > tr > th,
+        table > tbody > tr > td {
+            border: 1px solid #000 !important;
+            height: 30px;
+            padding: 10px;
+        }
+
+        table > thead > tr > th {
             border-bottom-width: 2px !important;
         }
-       table>thead:first-child>tr:first-child>th {
+
+        table > thead:first-child > tr:first-child > th {
             border-top: 0;
         }
-    </style>
+        </style>
+        <script>
+    $(document).ready(function () {
+        $("#btnwrapper").click(function () {
+            $('#loadingmessage').show();
 
+            $.ajax({
+                url: "@routes.Application.FullUmaTest()", success: function (result) {
+                    debugger;
+                    $('#loadingmessage').hide();
+                    obj = JSON.parse(result)
+
+                    if (obj.status == "success") {
+                        alert("Uma test passed successfuly ")
+                    }
+                    else {
+                        alert(obj.details)
+
+                    }
+                },error: function (jqXHR, exception) {
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect.\n Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                    $('#post').html(msg);
+                }
+            });
+        });
+    });
+</script>
     </head>
     <body>
         <div class="login-page">
 
             <form class="form form_wrapper">
+
                 <div><b><header>Login </header></b></div>
-                <!--<header><h3>@message </h3></header>-->
+                    <!--<header><h3>          @message </h3> </header>-->
                 <!--<table class="table_wrapper" border="1" width="100%">-->
-                    <!--<thead>-->
-                        <!--<tr>-->
-                            <!--<th>heading</th>-->
-                            <!--<th>heading</th>-->
-                        <!--</tr>-->
-                    <!--</thead>-->
-                    <!--<tbody>-->
-                        <!--<tr>-->
-                            <!--<td>data</td>-->
-                            <!--<td>data</td>-->
-                        <!--</tr>-->
-                        <!---->
-                    <!--</tbody>-->
+                <!--<thead>-->
+                <!--<tr>-->
+                <!--<th>heading</th>-->
+                <!--<th>heading</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<tr>-->
+                <!--<td>data</td>-->
+                <!--<td>data</td>-->
+                <!--</tr>-->
+                <!---->
+                <!--</tbody>-->
                 <!--</table>-->
                 <div class="button_wrapper"> <a href="@routes.Application.UpdatePage" style="
-    text-decoration: none"><div id="text">Update configuration</div></a></div>
+                    text-decoration: none
+                "><div id="text">Update configuration</div></a></div>
 
                 <div class="image_wrapper">
-
 
                     <div class="heading">Login with :</div>
                     <div class="image_inner_wrapper">
 
-                        @if(scopes.contains("duo")){
-                    <a href="@routes.Application.getAuthorizationUrlCall("duo")"> <img src="@routes.Assets.versioned("images/duo.png")"/></a>
-                    }
+                        @if(scopes.contains("duo")) {
+                            <a href="@routes.Application.getAuthorizationUrlCall("duo")"> <img src="@routes.Assets.versioned("images/duo.png")"/></a>
+                        }
 
 
-                     @if(scopes.contains("basic")){
-                    <a href="@routes.Application.getAuthorizationUrlCall("basic")"> <img src="@routes.Assets.versioned("images/basic.png")"/></a>
-                    }
+                        @if(scopes.contains("basic")) {
+                            <a href="@routes.Application.getAuthorizationUrlCall("basic")"> <img src="@routes.Assets.versioned("images/basic.png")"/></a>
+                        }
 
-                    @if(scopes.contains("gplus")){
-                    <a href="@routes.Application.getAuthorizationUrlCall("gplus")"> <img src="@routes.Assets.versioned("images/google.png")"/></a>
-                    }
+                        @if(scopes.contains("gplus")) {
+                            <a href="@routes.Application.getAuthorizationUrlCall("gplus")"> <img src="@routes.Assets.versioned("images/google.png")"/></a>
+                        }
 
-                    @if(scopes.contains("u2f")){
-<a href="@routes.Application.getAuthorizationUrlCall("u2f")"> <img src="@routes.Assets.versioned("images/U2F.png")"/></a>                }
+                        @if(scopes.contains("u2f")) {
+                            <a href="@routes.Application.getAuthorizationUrlCall("u2f")"> <img src="@routes.Assets.versioned("images/U2F.png")"/></a>
+                        }
                     </div>
                 </div>
+                <div id='loadingmessage' style='display: none'>
+                    <img src='@routes.Assets.versioned("images/loader.gif")'/>
+                    <h1>Running UMA Test</h1>
+                </div>
+                <div class="button_wrapper" id="btnwrapper"> <div id="text">Full Uma Test</div></div>
+
             </form>
         </div>
 

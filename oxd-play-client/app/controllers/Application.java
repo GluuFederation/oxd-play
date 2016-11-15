@@ -5,11 +5,12 @@ import com.google.common.collect.Lists;
 import model.Profile;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.xdi.oxd.client.callbacks.*;
 import org.xdi.oxd.client.oxdCommands;
 import org.xdi.oxd.common.params.*;
 import org.xdi.oxd.common.response.*;
-import play.core.netty.utils.Cookie;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -22,7 +23,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 
 
 public class Application extends Controller {
@@ -43,7 +43,7 @@ public class Application extends Controller {
     String error = "";
     public static String SESSION_STATE = "";
     public static String STATE = "";
-    public static org.xdi.oxd.client.oxdCommands oxdCommands = new oxdCommands(GlobalData.host,GlobalData.port);
+    public static org.xdi.oxd.client.oxdCommands oxdCommands = new oxdCommands(GlobalData.host, GlobalData.port);
 
 
     public Result HomePage() {
@@ -157,6 +157,8 @@ public class Application extends Controller {
             scopes.add("phone");
         }
 
+        scopes.add("uma_protection");
+        scopes.add("uma_authorization");
         params.setScope(scopes);
         params.setAcrValues(arcvalues);
 //        params.setOpHost(GlobalData.opHost);
@@ -166,17 +168,17 @@ public class Application extends Controller {
             params.setContacts(Lists.newArrayList(form.get("email")));
         }
         oxdCommands.registerSite(getregisterSiteParams(params), new RegisterSiteCallback() {
-                    @Override
-                    public void success(RegisterSiteResponse registerSiteResponse) {
-                        respRegisterSIte = registerSiteResponse;
+            @Override
+            public void success(RegisterSiteResponse registerSiteResponse) {
+                respRegisterSIte = registerSiteResponse;
 
-                    }
+            }
 
-                    @Override
-                    public void error(String s) {
-                        error = s;
-                    }
-                });
+            @Override
+            public void error(String s) {
+                error = s;
+            }
+        });
 
 
         if (respRegisterSIte == null) {
@@ -293,7 +295,8 @@ public class Application extends Controller {
         if (form.get("scope_phone") != null && form.get("scope_phone").toString().equals("1")) {
             scopes.add("phone");
         }
-
+        scopes.add("uma_protection");
+        scopes.add("uma_authorization");
         params.setScope(scopes);
         params.setAcrValues(arcvalues);
 
@@ -303,7 +306,7 @@ public class Application extends Controller {
         }
 
 
-        oxdCommands.updateSite( params, new UpdateSiteCallback() {
+        oxdCommands.updateSite(params, new UpdateSiteCallback() {
             @Override
             public void success(UpdateSiteResponse updateSiteResponse) {
                 respUpdateSite = updateSiteResponse;
@@ -545,7 +548,7 @@ public class Application extends Controller {
         String id = getOxdid();
 
         if (respGetTokensByCodeResponse == null)
-            oxdCommands.getToken( getTokenParams(id), new GetTokensByCodeCallback() {
+            oxdCommands.getToken(getTokenParams(id), new GetTokensByCodeCallback() {
                 @Override
                 public void success(GetTokensByCodeResponse getTokensByCodeResponse) {
                     respGetTokensByCodeResponse = getTokensByCodeResponse;
@@ -770,5 +773,26 @@ public class Application extends Controller {
         } else {
             return redirect(logoutResponse.getUri());
         }
+    }
+
+
+    public Result FullUmaTest() {
+        String message;
+        try {
+            message = oxdCommands.FullUmaTest(getOxdid());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return badRequest();
+        }
+        try {
+            JSONObject jsonObject = new JSONObject(message);
+
+            return ok(jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return badRequest();
+        }
+
     }
 }

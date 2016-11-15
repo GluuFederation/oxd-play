@@ -14,7 +14,7 @@ public class GlobalData {
 
     public static String host = "localhost";
     public static int port = 8099;
-    public static String opHost = "https://ce-dev2.gluu.org";
+    public static String opHost = "https://ce-dev.gluu.org";
     public static String AuthorizationRedirectUri = "https://myappplay.com:9005/getTokenbyCodeCall";
     public static String PostLogoutRedirectUri = "https://myappplay.com:9005";
     public static String ApplicationType = "web";
