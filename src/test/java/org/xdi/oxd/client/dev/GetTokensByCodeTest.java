@@ -3,7 +3,6 @@ package org.xdi.oxd.client.dev;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import org.xdi.oxd.client.CommandClient;
-import org.xdi.oxd.client.dev.RegisterSiteTest;
 import org.xdi.oxd.common.Command;
 import org.xdi.oxd.common.CommandType;
 import org.xdi.oxd.common.params.GetAuthorizationCodeParams;

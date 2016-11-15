@@ -1,11 +1,16 @@
 package org.xdi.oxd.client;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.xdi.oxd.client.callbacks.*;
 import org.xdi.oxd.common.Command;
+import org.xdi.oxd.common.CommandResponse;
 import org.xdi.oxd.common.CommandType;
 import org.xdi.oxd.common.params.*;
 import org.xdi.oxd.common.response.*;
+import org.xdi.oxd.rs.protect.Jackson;
+import org.xdi.oxd.rs.protect.RsResourceList;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -18,6 +23,7 @@ public class oxdCommands {
 
     String host;
     int port;
+    String RsProtectList = "{\"resources\":[{\"path\":\"/ws/phone\",\"conditions\":[{\"httpMethods\":[\"GET\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/view\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/view\"]},{\"httpMethods\":[\"PUT\", \"POST\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/add\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/add\"]},{\"httpMethods\":[\"DELETE\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/remove\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/remove\"]}]}]}";
 
     public oxdCommands(String host, int port) {
         this.host = host;
@@ -106,6 +112,7 @@ public class oxdCommands {
 
     /**
      * use to get Authorization URl
+     *
      * @param commandParams params for getiing Authorization URL
      * @param callback      return success or error
      */
@@ -147,6 +154,7 @@ public class oxdCommands {
 
     /**
      * use to get token on successful login
+     *
      * @param commandParams params for getiing Token after successful login and redirect to authorize url
      * @param callback      return success or error
      */
@@ -162,12 +170,7 @@ public class oxdCommands {
             return;
 
         }
-        if (commandParams.getState() == null || commandParams.getState().length() == 0) {
-            callback.error("State is null or empty.");
-            callback.success(null);
-            return;
 
-        }
 
         if (commandParams.getCode() == null || commandParams.getCode().length() == 0) {
             callback.error("code is null or empty.");
@@ -203,6 +206,7 @@ public class oxdCommands {
 
     /**
      * use to get User info
+     *
      * @param commandParams params for getting User Info using user token
      * @param callback      return success or error
      */
@@ -253,6 +257,7 @@ public class oxdCommands {
 
     /**
      * use to get logout uri
+     *
      * @param commandParams params for getting  Logout URI to logout user from application and close user session on server site.
      * @param callback      return success or error
      */
@@ -312,4 +317,91 @@ public class oxdCommands {
         return client.send(command).dataAsResponse(GetAuthorizationCodeResponse.class).getCode();
     }
 
+
+    public void RsResourceProtect(String siteId, RsResourceProtectCallback rsResourceProtectCallback) throws IOException {
+        CommandClient client;
+        final RsProtectParams commandParams = new RsProtectParams();
+        commandParams.setOxdId(siteId);
+        commandParams.setResources(resourceList(RsProtectList).getResources());
+
+        final Command command = new Command(CommandType.RS_PROTECT).setParamsObject(commandParams);
+
+
+        client = new CommandClient(host, port);
+
+        final RsProtectResponse resp = client.send(command).dataAsResponse(RsProtectResponse.class);
+
+        if (resp == null) {
+            rsResourceProtectCallback.error("error in Resource Protect");
+        } else {
+            rsResourceProtectCallback.success(resp);
+        }
+    }
+
+
+    public void RsCheckAccessString(String siteId, RsCheckAccessCallback rsCheckAccessCallback) throws IOException {
+        CommandClient client;
+
+        final RsCheckAccessParams params = new RsCheckAccessParams();
+        params.setOxdId(siteId);
+        params.setHttpMethod("GET");
+        params.setPath("/rest/photo");
+        params.setRpt("d6s-54asr-vfgm6-388dsl");
+
+        final Command command = new Command(CommandType.RS_CHECK_ACCESS).setParamsObject(params);
+
+        client = new CommandClient(host, port);
+
+        final RsCheckAccessResponse resp = client.send(command).dataAsResponse(RsCheckAccessResponse.class);
+
+        if (resp == null) {
+            rsCheckAccessCallback.error("error RsCheckAccess");
+        } else {
+            rsCheckAccessCallback.success(resp);
+        }
+    }
+
+    public void GetRPT(String siteId, RpGetRptCallback rpGetRptCallback) throws IOException {
+        CommandClient client;
+        final RpGetRptParams params = new RpGetRptParams();
+        params.setOxdId(siteId);
+        client = new CommandClient(host, port);
+
+        final Command command = new Command(CommandType.RP_GET_RPT);
+        command.setParamsObject(params);
+        final CommandResponse response = client.send(command);
+
+        final RpGetRptResponse rptResponse = response.dataAsResponse(RpGetRptResponse.class);
+
+        if (rpGetRptCallback != null)
+            rpGetRptCallback.success(rptResponse);
+        else
+            rpGetRptCallback.error("error in GetRpt");
+    }
+
+    public void GetGAT(String siteId, GetGATCallback getGATCallback) throws IOException {
+        CommandClient client;
+        final RpGetGatParams params = new RpGetGatParams();
+        params.setOxdId(siteId);
+        params.setScopes(Lists.newArrayList("http://photoz.example.com/dev/actions/all"));
+
+        final Command command = new Command(CommandType.RP_GET_GAT);
+        command.setParamsObject(params);
+        client = new CommandClient(host, port);
+        final CommandResponse response = client.send(command);
+
+        final RpGetRptResponse rptResponse = response.dataAsResponse(RpGetRptResponse.class);
+
+
+        if (rptResponse != null) {
+            getGATCallback.success(rptResponse);
+        } else {
+            getGATCallback.error("error in GetGAT");
+        }
+    }
+
+    public static RsResourceList resourceList(String rsProtect) throws IOException {
+        rsProtect = StringUtils.replace(rsProtect, "'", "\"");
+        return Jackson.createJsonMapper().readValue(rsProtect, RsResourceList.class);
+    }
 }

@@ -39,7 +39,7 @@ public class GetAuthorizationUrlTest {
 
             final GetAuthorizationUrlResponse resp = client.send(command).dataAsResponse(GetAuthorizationUrlResponse.class);
             assertNotNull(resp);
-            notEmpty(resp.getAuthorizationUrl());
+            TestUtils.notEmpty(resp.getAuthorizationUrl());
             Assert.assertTrue(resp.getAuthorizationUrl().contains("acr_values"));
         } finally {
             CommandClient.closeQuietly(client);

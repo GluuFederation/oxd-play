@@ -48,11 +48,11 @@ public class AuthorizationCodeFlowTest {
             final AuthorizationCodeFlowResponse resp = client.send(command).dataAsResponse(AuthorizationCodeFlowResponse.class);
             assertNotNull(resp);
 
-            notEmpty(resp.getAccessToken());
-            notEmpty(resp.getAuthorizationCode());
-            notEmpty(resp.getIdToken());
-            notEmpty(resp.getRefreshToken());
-            notEmpty(resp.getScope());
+            TestUtils.notEmpty(resp.getAccessToken());
+            TestUtils.notEmpty(resp.getAuthorizationCode());
+            TestUtils.notEmpty(resp.getIdToken());
+            TestUtils.notEmpty(resp.getRefreshToken());
+            TestUtils.notEmpty(resp.getScope());
         } finally {
             CommandClient.closeQuietly(client);
         }

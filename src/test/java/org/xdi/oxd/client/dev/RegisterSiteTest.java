@@ -39,7 +39,7 @@ public class RegisterSiteTest {
             RegisterSiteResponse resp = registerSite(client, opHost, redirectUrl, postLogoutRedirectUrl, logoutUrl);
             assertNotNull(resp);
 
-            notEmpty(resp.getOxdId());
+            TestUtils.notEmpty(resp.getOxdId());
 
             // more specific site registration
             final RegisterSiteParams commandParams = new RegisterSiteParams();
@@ -68,7 +68,7 @@ public class RegisterSiteTest {
     @Parameters({"host", "port"})
     @Test(dependsOnMethods = {"register"})
     public void update(String host, int port) throws IOException {
-        notEmpty(oxdId);
+        TestUtils.notEmpty(oxdId);
 
         CommandClient client = null;
         try {

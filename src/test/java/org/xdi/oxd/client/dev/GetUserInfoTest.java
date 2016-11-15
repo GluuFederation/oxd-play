@@ -39,7 +39,7 @@ public class GetUserInfoTest {
 
             final GetUserInfoResponse resp = client.send(new Command(CommandType.GET_USER_INFO).setParamsObject(params)).dataAsResponse(GetUserInfoResponse.class);
             assertNotNull(resp);
-            notEmpty(resp.getClaims().get("sub"));
+            TestUtils.notEmpty(resp.getClaims().get("sub"));
         } finally {
             CommandClient.closeQuietly(client);
         }
@@ -55,8 +55,8 @@ public class GetUserInfoTest {
 
         final GetTokensByCodeResponse resp = client.send(command).dataAsResponse(GetTokensByCodeResponse.class);
         assertNotNull(resp);
-        notEmpty(resp.getAccessToken());
-        notEmpty(resp.getIdToken());
+        TestUtils.notEmpty(resp.getAccessToken());
+        TestUtils.notEmpty(resp.getIdToken());
         return resp;
     }
 }
