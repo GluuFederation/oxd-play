@@ -24,6 +24,7 @@ public class oxdCommands {
     String host;
     int port;
     String RsProtectList = "{\"resources\":[{\"path\":\"/ws/phone\",\"conditions\":[{\"httpMethods\":[\"GET\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/view\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/view\"]},{\"httpMethods\":[\"PUT\", \"POST\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/add\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/add\"]},{\"httpMethods\":[\"DELETE\"],\"scopes\":[\"http://photoz.example.com/dev/actions/all\",\"http://photoz.example.com/dev/actions/remove\"],\"ticketScopes\":[\"http://photoz.example.com/dev/actions/remove\"]}]}]}";
+    private String message = "";
 
     public oxdCommands(String host, int port) {
         this.host = host;
@@ -318,7 +319,7 @@ public class oxdCommands {
     }
 
 
-    public void RsResourceProtect(String siteId, RsResourceProtectCallback rsResourceProtectCallback) throws IOException {
+    public RsProtectResponse RsResourceProtect(String siteId, RsResourceProtectCallback rsResourceProtectCallback) throws IOException {
         CommandClient client;
         final RsProtectParams commandParams = new RsProtectParams();
         commandParams.setOxdId(siteId);
@@ -336,10 +337,11 @@ public class oxdCommands {
         } else {
             rsResourceProtectCallback.success(resp);
         }
+        return resp;
     }
 
 
-    public void RsCheckAccessString(String siteId, RsCheckAccessCallback rsCheckAccessCallback) throws IOException {
+    public RsCheckAccessResponse RsCheckAccessString(String siteId, RsCheckAccessCallback rsCheckAccessCallback) throws IOException {
         CommandClient client;
 
         final RsCheckAccessParams params = new RsCheckAccessParams();
@@ -359,9 +361,12 @@ public class oxdCommands {
         } else {
             rsCheckAccessCallback.success(resp);
         }
+
+        return resp;
     }
 
-    public void GetRPT(String siteId, RpGetRptCallback rpGetRptCallback) throws IOException {
+
+    public RpGetRptResponse GetRPT(String siteId, RpGetRptCallback rpGetRptCallback) throws IOException {
         CommandClient client;
         final RpGetRptParams params = new RpGetRptParams();
         params.setOxdId(siteId);
@@ -377,9 +382,11 @@ public class oxdCommands {
             rpGetRptCallback.success(rptResponse);
         else
             rpGetRptCallback.error("error in GetRpt");
+
+        return rptResponse;
     }
 
-    public void GetGAT(String siteId, GetGATCallback getGATCallback) throws IOException {
+    public RpGetRptResponse GetGAT(String siteId, GetGATCallback getGATCallback) throws IOException {
         CommandClient client;
         final RpGetGatParams params = new RpGetGatParams();
         params.setOxdId(siteId);
@@ -398,10 +405,78 @@ public class oxdCommands {
         } else {
             getGATCallback.error("error in GetGAT");
         }
+        return rptResponse;
     }
 
     public static RsResourceList resourceList(String rsProtect) throws IOException {
         rsProtect = StringUtils.replace(rsProtect, "'", "\"");
         return Jackson.createJsonMapper().readValue(rsProtect, RsResourceList.class);
     }
+
+
+    public String FullUmaTest(String Siteid) throws IOException {
+
+        final String oxdId = Siteid;
+        RsCheckAccessResponse rsCheckAccessResponse;
+        RpGetRptResponse getRPT;
+        RpGetRptResponse getGAT;
+        RsProtectResponse rsProtectResponse = RsResourceProtect(Siteid, new RsResourceProtectCallback() {
+            @Override
+            public void success(RsProtectResponse rsProtectResponse) {
+                message = "success";
+            }
+
+            @Override
+            public void error(String error) {
+                message = "error in RsResourceProtect";
+
+            }
+        });
+
+
+        rsCheckAccessResponse = RsCheckAccessString(oxdId, new RsCheckAccessCallback() {
+            @Override
+            public void success(RsCheckAccessResponse rsCheckAccessResponse) {
+                message = "success";
+
+            }
+
+            @Override
+            public void error(String error) {
+                message = "error in RsCheckAccessString";
+
+            }
+        });
+        getGAT = GetGAT(oxdId, new GetGATCallback() {
+            @Override
+            public void success(RpGetRptResponse rpGetRptResponse) {
+                message = "success";
+
+            }
+
+            @Override
+            public void error(String error) {
+                message = "error in GetGAT";
+
+            }
+        });
+
+        getRPT = GetRPT(oxdId, new RpGetRptCallback() {
+            @Override
+            public void success(RpGetRptResponse rpGetRptResponse) {
+                message = "success";
+
+            }
+
+            @Override
+            public void error(String error) {
+                message = "error in GetRPT";
+
+            }
+        });
+
+        return message;
+    }
+
+
 }
