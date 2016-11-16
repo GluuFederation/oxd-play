@@ -260,11 +260,7 @@ catch (Exception e) {
 ----
 ### 7)RsProtectResponse
 ```java
-/**
-*Siteid = oxd-id of registerd site
-*RsProtectList = RsProtectList in valid json for check oxd docs for valid form
-*RsResourceProtectCallback = call back for oxd-server call
-*/
+
 try{
 
             RsProtectParams rsProtectParams = new RsProtectParams();
@@ -292,19 +288,11 @@ catch (IOException e) {
 
 ### 9)RsCheckAccessString
 ```java
-
-/**
-*Siteid = oxd-id of registerd site
-* httpMethod = Method to Access
-*path = path for resource
-*RTP = obtained rpt from server
-*RsCheckAccessCallback = call back for oxd-server call
-*/
 try{
 
         RsCheckAccessParams rsCheckAccessParams = new RsCheckAccessParams();
         rsCheckAccessParams.setOxdId(oxdId);   //Required
-        rsCheckAccessParams.setHttpMethod(HttpMethod");  //Required
+        rsCheckAccessParams.setHttpMethod("HttpMethod");  //Required
         rsCheckAccessParams.setPath(Resource Path);  //Required
         rsCheckAccessParams.setRpt(RTP);  //Required
 
