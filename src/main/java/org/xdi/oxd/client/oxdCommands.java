@@ -16,6 +16,7 @@ import org.xdi.oxd.rs.protect.RsResourceList;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 
@@ -319,15 +320,14 @@ public class oxdCommands {
         params.setPassword(userSecret);
 
         final Command command = new Command(CommandType.GET_AUTHORIZATION_CODE).setParamsObject(params);
+        CommandClient.closeQuietly(client);
+
         return client.send(command).dataAsResponse(GetAuthorizationCodeResponse.class).getCode();
     }
 
 
-    public RsProtectResponse RsResourceProtect(String siteId, RsResourceProtectCallback rsResourceProtectCallback) throws IOException {
+    public RsProtectResponse RsResourceProtect(RsProtectParams commandParams, RsResourceProtectCallback rsResourceProtectCallback) throws IOException {
         CommandClient client;
-        final RsProtectParams commandParams = new RsProtectParams();
-        commandParams.setOxdId(siteId);
-        commandParams.setResources(resourceList(RsProtectList).getResources());
 
         final Command command = new Command(CommandType.RS_PROTECT).setParamsObject(commandParams);
 
@@ -341,18 +341,15 @@ public class oxdCommands {
         } else {
             rsResourceProtectCallback.success(resp);
         }
+        CommandClient.closeQuietly(client);
+
         return resp;
     }
 
 
-    public RsCheckAccessResponse RsCheckAccessString(String siteId, String httpMethod, String path, String rpt, RsCheckAccessCallback rsCheckAccessCallback) throws IOException {
+    public RsCheckAccessResponse RsCheckAccessString(RsCheckAccessParams params, RsCheckAccessCallback rsCheckAccessCallback) throws IOException {
         CommandClient client;
 
-        final RsCheckAccessParams params = new RsCheckAccessParams();
-        params.setOxdId(siteId);
-        params.setHttpMethod(httpMethod);
-        params.setPath(path);
-        params.setRpt(rpt);
 
         final Command command = new Command(CommandType.RS_CHECK_ACCESS).setParamsObject(params);
 
@@ -365,16 +362,15 @@ public class oxdCommands {
         } else {
             rsCheckAccessCallback.success(resp);
         }
+        CommandClient.closeQuietly(client);
 
         return resp;
     }
 
 
-    public RpGetRptResponse GetRPT(String siteId, RpGetRptCallback rpGetRptCallback) throws IOException {
+    public RpGetRptResponse GetRPT(RpGetRptParams params, RpGetRptCallback rpGetRptCallback) throws IOException {
         CommandClient client;
-        final RpGetRptParams params = new RpGetRptParams();
-        params.setForceNew(true);
-        params.setOxdId(siteId);
+
         client = new CommandClient(host, port);
 
         final Command command = new Command(CommandType.RP_GET_RPT);
@@ -387,15 +383,15 @@ public class oxdCommands {
             rpGetRptCallback.success(rptResponse);
         else
             rpGetRptCallback.error("error in GetRpt");
+        CommandClient.closeQuietly(client);
 
         return rptResponse;
     }
 
-    public RpGetRptResponse GetGAT(String siteId, GetGATCallback getGATCallback) throws IOException {
+
+    public RpGetRptResponse GetGAT(RpGetGatParams params, GetGATCallback getGATCallback) throws IOException {
         CommandClient client;
-        final RpGetGatParams params = new RpGetGatParams();
-        params.setOxdId(siteId);
-        params.setScopes(Lists.newArrayList("uma_authorization"));
+
 
         final Command command = new Command(CommandType.RP_GET_GAT);
         command.setParamsObject(params);
@@ -410,15 +406,14 @@ public class oxdCommands {
         } else {
             getGATCallback.error("error in GetGAT");
         }
+        CommandClient.closeQuietly(client);
+
         return rptResponse;
     }
 
 
-    public RpAuthorizeRptResponse authorizeRpt(String sideOxd, String rpt, String ticket) throws IOException {
-        final RpAuthorizeRptParams params = new RpAuthorizeRptParams();
-        params.setOxdId(sideOxd);
-        params.setRpt(rpt);
-        params.setTicket(ticket);
+    public RpAuthorizeRptResponse authorizeRpt(RpAuthorizeRptParams params, String ticket) throws IOException {
+
 
         CommandClient client = new CommandClient(host, port);
         final RpAuthorizeRptResponse resp = client.send(new Command(CommandType.RP_AUTHORIZE_RPT, params)).dataAsResponse(RpAuthorizeRptResponse.class);
@@ -432,6 +427,14 @@ public class oxdCommands {
     }
 
 
+    /**
+     * full Uma test for registerd Site
+     *
+     * @param Siteid oxdId
+     * @return result of test
+     * @throws IOException
+     */
+
     public String FullUmaTest(String Siteid) throws IOException {
 
         final String oxdId = Siteid;
@@ -442,7 +445,10 @@ public class oxdCommands {
         message = "";
         ticket = "";
 
-        RsProtectResponse rsProtectResponse = RsResourceProtect(Siteid, new RsResourceProtectCallback() {
+        final RsProtectParams rsProtectParams = new RsProtectParams();
+        rsProtectParams.setOxdId(oxdId);
+        rsProtectParams.setResources(resourceList(RsProtectList).getResources());
+        RsProtectResponse rsProtectResponse = RsResourceProtect(rsProtectParams, new RsResourceProtectCallback() {
             @Override
             public void success(RsProtectResponse rsProtectResponse) {
                 message = message + " 'success RsResourceProtect'";
@@ -455,7 +461,13 @@ public class oxdCommands {
             }
         });
 
-        rsCheckAccessResponse = RsCheckAccessString(oxdId, "GET", "/scim", "", new RsCheckAccessCallback() {
+        RsCheckAccessParams rsCheckAccessParams = new RsCheckAccessParams();
+        rsCheckAccessParams.setOxdId(oxdId);
+        rsCheckAccessParams.setHttpMethod("GET");
+        rsCheckAccessParams.setPath("/scim");
+        rsCheckAccessParams.setRpt("");
+
+        rsCheckAccessResponse = RsCheckAccessString(rsCheckAccessParams, new RsCheckAccessCallback() {
             @Override
             public void success(RsCheckAccessResponse rsCheckAccessResponse) {
                 message = message + " 'success RsCheckAccessString'";
@@ -477,7 +489,10 @@ public class oxdCommands {
 
         }
 
-        getRPT = GetRPT(oxdId, new RpGetRptCallback() {
+        final RpGetRptParams rpGetRptParams = new RpGetRptParams();
+        rpGetRptParams.setForceNew(true);
+        rpGetRptParams.setOxdId(oxdId);
+        getRPT = GetRPT(rpGetRptParams, new RpGetRptCallback() {
             @Override
             public void success(RpGetRptResponse rpGetRptResponse) {
                 message = message + " 'success GetRPT'";
@@ -491,8 +506,9 @@ public class oxdCommands {
             }
         });
 
+        rsCheckAccessParams.setRpt(getRPT.getRpt());
         if (getRPT != null) {
-            rsCheckAccessResponse = RsCheckAccessString(oxdId, "GET", "/scim", getRPT.getRpt(), new RsCheckAccessCallback() {
+            rsCheckAccessResponse = RsCheckAccessString(rsCheckAccessParams, new RsCheckAccessCallback() {
                 @Override
                 public void success(RsCheckAccessResponse rsCheckAccessResponse) {
                     message = message + " 'success RsCheckAccessString'";
@@ -512,10 +528,16 @@ public class oxdCommands {
                 message = message + " 'Access granted second time'";
 
             }
-            RpAuthorizeRptResponse rsAuth = authorizeRpt(oxdId, getRPT.getRpt(), ticket);
+            rsCheckAccessParams.setRpt(getRPT.getRpt());
+
+            final RpAuthorizeRptParams authorizeRptParams = new RpAuthorizeRptParams();
+            authorizeRptParams.setOxdId(oxdId);
+            authorizeRptParams.setRpt(getRPT.getRpt());
+            authorizeRptParams.setTicket(ticket);
+            RpAuthorizeRptResponse rsAuth = authorizeRpt(authorizeRptParams, ticket);
 
             if (rsAuth != null) {
-                rsCheckAccessResponse = RsCheckAccessString(oxdId, "GET", "/scim", getRPT.getRpt(), new RsCheckAccessCallback() {
+                rsCheckAccessResponse = RsCheckAccessString(rsCheckAccessParams, new RsCheckAccessCallback() {
                     @Override
                     public void success(RsCheckAccessResponse rsCheckAccessResponse) {
 

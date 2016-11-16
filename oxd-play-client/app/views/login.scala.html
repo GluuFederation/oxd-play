@@ -49,46 +49,50 @@
         }
         </style>
         <script>
-    $(document).ready(function () {
-        $("#btnwrapper").click(function () {
-            $('#loadingmessage').show();
+                $(document).ready(function () {
+                    $("#btnwrapper").click(function () {
+                        $('#loadingmessage').show();
 
-            $.ajax({
-                url: "@routes.Application.FullUmaTest()", success: function (result) {
-                    debugger;
-                    $('#loadingmessage').hide();
-                    obj = JSON.parse(result)
+                        $.ajax({
+                            url: "@routes.Application.FullUmaTest()", success: function (result) {
+                                debugger;
+                                $('#loadingmessage').hide();
+                                obj = JSON.parse(result)
 
-                    if (obj.status == "success") {
-                        alert("Uma test passed successfuly ")
-                    }
-                    else {
-                        alert(obj.details)
+                                if (obj.status == "success") {
+                                    alert("Uma test passed successfuly ")
+                                }
+                                else {
+                                    alert(obj.details)
 
-                    }
-                },error: function (jqXHR, exception) {
-                    var msg = '';
-                    if (jqXHR.status === 0) {
-                        msg = 'Not connect.\n Verify Network.';
-                    } else if (jqXHR.status == 404) {
-                        msg = 'Requested page not found. [404]';
-                    } else if (jqXHR.status == 500) {
-                        msg = 'Internal Server Error [500].';
-                    } else if (exception === 'parsererror') {
-                        msg = 'Requested JSON parse failed.';
-                    } else if (exception === 'timeout') {
-                        msg = 'Time out error.';
-                    } else if (exception === 'abort') {
-                        msg = 'Ajax request aborted.';
-                    } else {
-                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                    }
-                    $('#post').html(msg);
-                }
-            });
-        });
-    });
-</script>
+                                }
+                            }, error: function (jqXHR, exception) {
+                                $('#loadingmessage').hide();
+
+                                var msg = '';
+                                if (jqXHR.status === 0) {
+                                    msg = 'Not connect.\n Verify Network.';
+                                } else if (jqXHR.status == 404) {
+                                    msg = 'Requested page not found. [404]';
+                                } else if (jqXHR.status == 500) {
+                                    msg = 'Internal Server Error [500].';
+                                } else if (exception === 'parsererror') {
+                                    msg = 'Requested JSON parse failed.';
+                                } else if (exception === 'timeout') {
+                                    msg = 'Time out error.';
+                                } else if (exception === 'abort') {
+                                    msg = 'Ajax request aborted.';
+                                } else {
+                                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                                }
+                                alert(msg)
+
+                                $('#post').html(msg);
+                            }
+                        });
+                    });
+                });
+        </script>
     </head>
     <body>
         <div class="login-page">
@@ -124,7 +128,6 @@
                         @if(scopes.contains("duo")) {
                             <a href="@routes.Application.getAuthorizationUrlCall("duo")"> <img src="@routes.Assets.versioned("images/duo.png")"/></a>
                         }
-
 
                         @if(scopes.contains("basic")) {
                             <a href="@routes.Application.getAuthorizationUrlCall("basic")"> <img src="@routes.Assets.versioned("images/basic.png")"/></a>

@@ -552,11 +552,14 @@ public class Application extends Controller {
                 @Override
                 public void success(GetTokensByCodeResponse getTokensByCodeResponse) {
                     respGetTokensByCodeResponse = getTokensByCodeResponse;
+
                 }
 
                 @Override
                 public void error(String s) {
                     error = s;
+                    System.out.print(" " + error);
+
                 }
             });
 
@@ -564,7 +567,6 @@ public class Application extends Controller {
             return ok(views.html.login.render(error, getOxdScopes()));
 
         }
-        System.out.print(respGetTokensByCodeResponse.toString() + " " + error);
         GetUserInfoParams getUserInfoParams = new GetUserInfoParams();
         getUserInfoParams.setOxdId(id);
         if (respGetTokensByCodeResponse != null) {

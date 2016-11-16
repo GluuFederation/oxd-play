@@ -257,8 +257,122 @@ catch (Exception e) {
  }        
 
 ```
+----
+### 7)RsProtectResponse
+```java
+/**
+*Siteid = oxd-id of registerd site
+*RsProtectList = RsProtectList in valid json for check oxd docs for valid form
+*RsResourceProtectCallback = call back for oxd-server call
+*/
+try{
 
+            RsProtectParams rsProtectParams = new RsProtectParams();
+          rsProtectParams.setOxdId(oxdId);    //Required
+          rsProtectParams.setResources(resourceList(RsProtectList).getResources());  //Required
+          
+          RsProtectResponse rsProtectResponse = RsResourceProtect(rsProtectParams, new RsResourceProtectCallback() {
+              @Override
+              public void success(RsProtectResponse rsProtectResponse) {
+                 
+              }
+  
+              @Override
+              public void error(String error) {
+                 
+              }
+          });
+}
+catch (IOException e) {
+  e.printStackTrace();
+
+}
+```
 ----
 
+### 9)RsCheckAccessString
+```java
+
+/**
+*Siteid = oxd-id of registerd site
+* httpMethod = Method to Access
+*path = path for resource
+*RTP = obtained rpt from server
+*RsCheckAccessCallback = call back for oxd-server call
+*/
+try{
+
+        RsCheckAccessParams rsCheckAccessParams = new RsCheckAccessParams();
+        rsCheckAccessParams.setOxdId(oxdId);   //Required
+        rsCheckAccessParams.setHttpMethod(HttpMethod");  //Required
+        rsCheckAccessParams.setPath(Resource Path);  //Required
+        rsCheckAccessParams.setRpt(RTP);  //Required
+
+        rsCheckAccessResponse = RsCheckAccessString(rsCheckAccessParams, new RsCheckAccessCallback() {
+            @Override
+            public void success(RsCheckAccessResponse rsCheckAccessResponse) {
+                         String ticket = rsCheckAccessResponse.getTicket();
+                        String access = rsCheckAccessResponse.getAccess();
+            }
+
+            @Override
+            public void error(String error) {
+
+            }
+        });
+}
+catch (IOException e) {
+  e.printStackTrace();
+}
+```
+----
+### 10)GetRPT
+```java
+try{
+                RpGetRptParams rpGetRptParams = new RpGetRptParams(); 
+               rpGetRptParams.setForceNew(true);
+               rpGetRptParams.setOxdId(oxdId);   //Required
+               getRPT = GetRPT(rpGetRptParams, new RpGetRptCallback() {
+                   @Override
+                   public void success(RpGetRptResponse rpGetRptResponse) {
+                        String RPT = rpGetRptResponse.getRpt();
+                   }
+       
+                   @Override
+                   public void error(String error) {
+                
+                   }
+               });
+
+}
+catch (IOException e) {
+  e.printStackTrace();
+}
+```
+### 11)authorizeRpt
+```java
+try{
+    final RpAuthorizeRptParams authorizeRptParams = new RpAuthorizeRptParams();
+            authorizeRptParams.setOxdId(oxdId);    //Required
+            authorizeRptParams.setRpt(RPT);   //Required
+            authorizeRptParams.setTicket(ticket);    //Required
+            RpAuthorizeRptResponse rsAuth = authorizeRpt(authorizeRptParams, ticket);
+
+            if (rsAuth != null) {
+                rsCheckAccessResponse = RsCheckAccessString(rsCheckAccessParams, new RsCheckAccessCallback() {
+                    @Override
+                    public void success(RsCheckAccessResponse rsCheckAccessResponse) {
+
+                    }
+
+                    @Override
+                    public void error(String error) {
+
+                    }
+                });}
+catch (IOException e) {
+  e.printStackTrace();
+}
+```
 
 **Note :- You can also refer "[OXD_JAVA](https://oxd.gluu.org/docs/libraries/java/)" for more details of java classes**
