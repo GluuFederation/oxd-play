@@ -233,7 +233,7 @@ catch (Exception e) {
 ```java
 //create GetLogoutUrlParams
 try{
-       final GetLogoutUrlParams getLogoutUrlParams = new GetLogoutUrlParams();
+                GetLogoutUrlParams getLogoutUrlParams = new GetLogoutUrlParams();
                 commandParams.setOxdId("Registered site's oxd-id"); //     required
 
 
@@ -263,7 +263,7 @@ catch (Exception e) {
 
 try{
 
-            RsProtectParams rsProtectParams = new RsProtectParams();
+          RsProtectParams rsProtectParams = new RsProtectParams();
           rsProtectParams.setOxdId(oxdId);    //Required
           rsProtectParams.setResources(resourceList(RsProtectList).getResources());  //Required
           
@@ -317,7 +317,7 @@ catch (IOException e) {
 ### 10)GetRPT
 ```java
 try{
-                RpGetRptParams rpGetRptParams = new RpGetRptParams(); 
+               RpGetRptParams rpGetRptParams = new RpGetRptParams(); 
                rpGetRptParams.setForceNew(true);
                rpGetRptParams.setOxdId(oxdId);   //Required
                getRPT = GetRPT(rpGetRptParams, new RpGetRptCallback() {
@@ -340,7 +340,7 @@ catch (IOException e) {
 ### 11)authorizeRpt
 ```java
 try{
-    final RpAuthorizeRptParams authorizeRptParams = new RpAuthorizeRptParams();
+            RpAuthorizeRptParams authorizeRptParams = new RpAuthorizeRptParams();
             authorizeRptParams.setOxdId(oxdId);    //Required
             authorizeRptParams.setRpt(RPT);   //Required
             authorizeRptParams.setTicket(ticket);    //Required
